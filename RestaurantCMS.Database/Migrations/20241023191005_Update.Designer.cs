@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantCMS.Database;
 
@@ -11,9 +12,11 @@ using RestaurantCMS.Database;
 namespace RestaurantCMS.Database.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241023191005_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,15 +433,10 @@ namespace RestaurantCMS.Database.Migrations
                     b.Property<DateTime>("StartTimeOfReservation")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TableId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TableId");
 
                     b.HasIndex("UserId");
 
@@ -516,15 +514,9 @@ namespace RestaurantCMS.Database.Migrations
 
             modelBuilder.Entity("RestaurantCMS.Database.Models.TableReservation", b =>
                 {
-                    b.HasOne("RestaurantCMS.Database.Models.Table", "Table")
-                        .WithMany()
-                        .HasForeignKey("TableId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Table");
 
                     b.Navigation("User");
                 });

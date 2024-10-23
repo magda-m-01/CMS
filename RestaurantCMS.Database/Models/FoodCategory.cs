@@ -1,8 +1,8 @@
 ﻿namespace RestaurantCMS.Database.Models
 {
-    public class Section2
+    public class FoodCategory
     {
         public int Id { get; set; }
-        public string? Content { get; set; }
+        public string? Name { get; set; }
     }
 }

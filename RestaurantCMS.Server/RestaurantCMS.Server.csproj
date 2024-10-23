@@ -33,4 +33,8 @@
     <ProjectReference Include="..\RestaurantCMS.Database\RestaurantCMS.Database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Shared\" />
+  </ItemGroup>
+
 </Project>
