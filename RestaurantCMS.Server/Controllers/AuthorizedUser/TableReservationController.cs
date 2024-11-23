@@ -20,8 +20,8 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             _dataContext = dataContext;
         }
 
-        [HttpGet(Name = "GetTableResrvation"), Authorize]
-        public async Task<IActionResult> GetTableReservation()
+        [HttpGet("GetAllTableReservations", Name = "GetTablesResrvations"), Authorize]
+        public async Task<IActionResult> GetTablesResrvations()
         {
             var tableReservations = await _dataContext.TableReservations.ToListAsync();
 
@@ -33,7 +33,7 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             return Ok(tableReservations);
         }
 
-        [HttpPost(Name = "AddTableReservation"), Authorize]
+        [HttpPost("AddTableReservation", Name = "AddTableReservation"), Authorize]
         public async Task<IActionResult> AddTableReservation(AddTableReservation addTableReservation)
         {
             var userId = User?.Identity?.Name;
@@ -53,7 +53,6 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             var tableReservation = new TableReservation()
             {
                 StartTimeOfReservation = addTableReservation.StartTimeOfReservation,
-                EndTimeOfReservation = addTableReservation.EndTimeOfReservation,
                 NumberOfPeople = addTableReservation.NumberOfPeople,
                 User = user
             };

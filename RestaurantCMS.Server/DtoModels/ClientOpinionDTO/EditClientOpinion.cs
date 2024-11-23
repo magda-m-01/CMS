@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 
-namespace RestaurantCMS.Database.Models
+namespace RestaurantCMS.Server.DtoModels.ClientOpinionDTO
 {
-    public class ClientOpinion
+    public class EditClientOpinion
     {
         public int Id { get; set; }
         public string? Title { get; set; }
         public string? Content { get; set; }
         public IdentityUser? User { get; set; }
-        public DateTime CreatedAt {get; set;}
     }
 }

@@ -8,7 +8,8 @@ using RestaurantCMS.Server.DtoModels;
 namespace RestaurantCMS.Server.Controllers.LoggedUser
 {
     [ApiController]
-    [Route("administrator/[controller]"), Authorize]
+    [Route("administrator/[controller]")]
+    [Authorize(Roles = "Administrator")]
     public class TableController : ControllerBase
     {
         private readonly ILogger<TableController> _logger;
@@ -20,20 +21,20 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             _dataContext = dataContext;
         }
 
-        [HttpGet(Name = "GetTables"), Authorize]
-        public async Task<IActionResult> GetTables()
+        [HttpGet("GetAllTables",Name = "GetAllTables"), Authorize]
+        public async Task<IActionResult> GetAllTables()
         {
-            var tableReservations = await _dataContext.Tables.ToListAsync();
+            var tables = await _dataContext.Tables.ToListAsync();
 
-            if (tableReservations == null)
+            if (tables == null)
             {
                 return NotFound();
             }
 
-            return Ok(tableReservations);
+            return Ok(tables);
         }
 
-        [HttpPost(Name = "AddTable"), Authorize]
+        [HttpPost("AddTable", Name = "AddTable"), Authorize]
         public async Task<IActionResult> AddTable(AddTable addtable)
         {
             var userId = User?.Identity?.Name;

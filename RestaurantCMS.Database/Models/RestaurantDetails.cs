@@ -10,5 +10,6 @@
         public string? Steet { get; set; }
         public string? HomeNumber { get; set; }
         public string? OpeningHours {  get; set; }
+        public DateTime CreatedAt {get; set;}
     }
 }

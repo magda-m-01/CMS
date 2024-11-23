@@ -19,6 +19,7 @@ namespace RestaurantCMS.Database
         public DbSet<HomeWelcomeSection> HomeWelcomeSections { get; set; }
         public DbSet<RestaurantStaff> RestaurantStaff { get; set; }
         public DbSet<ClientOpinion> ClientOpinions { get; set; }
+        public DbSet<FoodCategory> FoodCategories { get; set; }
 
     }
 }
