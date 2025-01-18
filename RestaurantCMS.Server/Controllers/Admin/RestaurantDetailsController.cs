@@ -31,7 +31,6 @@ namespace RestaurantCMS.Server.Controllers.Admin
         [HttpPost("AddRestaurantDetails",Name = "AddRestaurantDetails"), Authorize]
         public async Task<IActionResult> AddRestaurantDetails(RestaurantDetails details)
         {
-            details.CreatedAt = DateTime.UtcNow;
             await _dataContext.RestaurantDetails.AddAsync(details);
             await _dataContext.SaveChangesAsync();
             return Ok(details);
@@ -46,13 +45,8 @@ namespace RestaurantCMS.Server.Controllers.Admin
                 return NotFound($"No details found with ID {details.Id}");
             }
 
-            existingDetails.Name = details.Name ?? existingDetails.Name;
-            existingDetails.PhoneNumber = details.PhoneNumber ?? existingDetails.PhoneNumber;
-            existingDetails.ZipCode = details.ZipCode ?? existingDetails.ZipCode;
-            existingDetails.City = details.City ?? existingDetails.City;
-            existingDetails.Steet = details.Steet ?? existingDetails.Steet;
-            existingDetails.HomeNumber = details.HomeNumber ?? existingDetails.HomeNumber;
-            existingDetails.OpeningHours = details.OpeningHours ?? existingDetails.OpeningHours;
+            existingDetails.KeyValue = details.KeyValue ?? existingDetails.KeyValue;
+            existingDetails.KeyName = details.KeyName ?? existingDetails.KeyName;
 
             _dataContext.RestaurantDetails.Update(existingDetails);
             await _dataContext.SaveChangesAsync();

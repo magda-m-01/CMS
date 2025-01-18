@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace RestaurantCMS.Server.Controllers.Shared
 {
     [ApiController]
-    [Route("[controller]"), Authorize]
+    [Route("[controller]")]
     public class DishController : ControllerBase
     {
         private readonly ILogger<DishController> _logger;
@@ -17,10 +17,10 @@ namespace RestaurantCMS.Server.Controllers.Shared
             _dataContext = dataContext;
         }
 
-        [HttpGet("GetDishesPage", Name = "GetDishesPage"), Authorize]
+        [HttpGet("GetDishesPage", Name = "GetDishesPage")]
         public async Task<IActionResult> GetDishesPage()
         {
-            var dishes = await _dataContext.Dishes.ToListAsync();
+            var dishes = await _dataContext.Dishes.Include(c => c.Category).ToListAsync();
 
             if (dishes == null)
             {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace RestaurantCMS.Server.Controllers.Shared
 {
     [ApiController]
-    [Route("[controller]"), Authorize]
+    [Route("[controller]")]
     public class HomeGalleryController : ControllerBase
     {
         private readonly ILogger<HomeGalleryController> _logger;
@@ -17,7 +17,7 @@ namespace RestaurantCMS.Server.Controllers.Shared
             _dataContext = dataContext;
         }
 
-        [HttpGet("GetHomeGalleriesPage", Name = "GetHomeGalleriesPage"), Authorize]
+        [HttpGet("GetHomeGalleriesPage", Name = "GetHomeGalleriesPage")]
         public async Task<IActionResult> GetHomeGalleriesPage()
         {
             var homeGalleries = await _dataContext.HomeGallery.ToListAsync();
