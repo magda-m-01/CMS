@@ -1,13 +1,21 @@
-import { FormControl, InputLabel, Input, Card } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
+import { login } from "../api/neutralEndpoints";
+import { useDispatch } from "react-redux";
+import { setToken } from "../slices/authSlice";
+import { setIsAdmin } from "../slices/authSlice";
+import { getAllTables } from "../api/adminEndpoints";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 
-const LoginForm = ({ setRegister }) => {
+const LoginForm = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
+    const token = useSelector((state) => state.auth.token);
+    const dispatch = useDispatch();
+    let navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,35 +24,19 @@ const LoginForm = ({ setRegister }) => {
 
     const loginUser = async () => {
         try {
-            const payload = {
-                email: "hannatruskawka@gmail.com",
-                password: "Haslo.123",
-            };
-            const response = await axios.post("/api/login", payload);
-            console.log("response", response);
-            const dishes = await axios.get("/api/Dish/GetDishesPage", {
-                headers: {
-                    Authorization: `Bearer ${response.data.accessToken}`, // Include the token in the Authorization header
-                },
-            });
-            console.log("dishes", dishes);
-            await axios.post(
-                "/api/administrator/FoodCategory/AddFoodCategory",
-                {
-                    name: "danie główne",
-                    createdAt: "2025-01-17T12:43:26.914Z",
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${response.data.accessToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            const response = await login(formData);
+            await dispatch(setToken(response.data.accessToken));
 
-            console.log("login successfull");
+            try {
+                await getAllTables(response.data.accessToken); // Assuming this returns successfully if user is admin
+                await dispatch(setIsAdmin(true));
+            } catch (err) {
+                await dispatch(setIsAdmin(false));
+            }
+
+            navigate("/");
         } catch (err) {
-            console.log("login failed");
+            console.log("login failed", err);
         }
     };
 
@@ -63,8 +55,7 @@ const LoginForm = ({ setRegister }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 2,
-                p: 4,
-                my: 4,
+                mb: 4,
             }}
         >
             <Typography variant="h5" component="h1">

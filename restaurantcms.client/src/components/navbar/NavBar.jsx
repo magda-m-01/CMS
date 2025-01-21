@@ -12,84 +12,55 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import UserOptions from "../UserOptions";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
-    const isAdmin = useSelector((state) => state.auth.isAdmin);
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-    };
+    const location = useLocation();
 
     const links = [
         { name: "Home", path: "/" },
+        { name: "Menu", path: "/menu" },
         { name: "About", path: "/about" },
         { name: "Services", path: "/services" },
         { name: "Contact", path: "/contact" },
     ];
 
     return (
-        <AppBar position="static">
-            <Toolbar>
-                <Box
-                    sx={{
-                        flexGrow: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                    }}
-                >
-                    <Typography variant="h6" component="div">
-                        MyBrand
-                    </Typography>
-                </Box>
-
-                <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                    {links.map((link) => (
-                        <Button
-                            key={link.name}
-                            color="inherit"
-                            component={Link}
-                            to={link.path}
-                        >
-                            {link.name}
-                        </Button>
-                    ))}
-                </Box>
-
-                <Box sx={{ display: { xs: "flex", md: "none" } }}>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        onClick={handleMenuOpen}
+        location.pathname !== "/login" &&
+        location.pathname != "/admin_dashboard" && (
+            <AppBar position="static" sx={{ width: "100%" }}>
+                <Toolbar>
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                        }}
                     >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                    >
+                        <Typography variant="h6" component="div">
+                            MyBrand
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
                         {links.map((link) => (
-                            <MenuItem
+                            <Button
                                 key={link.name}
-                                onClick={handleMenuClose}
+                                color="inherit"
                                 component={Link}
                                 to={link.path}
                             >
                                 {link.name}
-                            </MenuItem>
+                            </Button>
                         ))}
-                    </Menu>
-                </Box>
-            </Toolbar>
-        </AppBar>
+                    </Box>
+
+                    <UserOptions />
+                </Toolbar>
+            </AppBar>
+        )
     );
 };
 
