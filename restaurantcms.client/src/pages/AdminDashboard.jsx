@@ -19,9 +19,12 @@ import Dishes from "../components/admin/Dishes";
 import { useNavigate } from "react-router";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import HomeWelcomeSections from "../components/admin/HomeWelcomeSections";
+import HomeGallery from "../components/admin/HomeGalleries";
+import RestaurantDetailsAdmin from "../components/admin/RestaurantDetailsAdmin";
+import RestaurantStaffAdmin from "../components/admin/RestaurantStaffAdmin";
 
 const AdminDashboard = () => {
-    const [selectedMenu, setSelectedMenu] = useState("categories");
+    const [selectedMenu, setSelectedMenu] = useState("details");
     const [categories, setCategories] = useState([]);
     const [dishes, setDishes] = useState([]);
     const [newCategory, setNewCategory] = useState("");
@@ -108,9 +111,21 @@ const AdminDashboard = () => {
                     <List>
                         <ListItem
                             button
+                            onClick={() => handleMenuSelect("details")}
+                        >
+                            <ListItemText primary="Restaurant details" />
+                        </ListItem>
+                        <ListItem
+                            button
                             onClick={() => handleMenuSelect("home")}
                         >
                             <ListItemText primary="Home Welcome Section" />
+                        </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => handleMenuSelect("homeGallery")}
+                        >
+                            <ListItemText primary="Home Gallery" />
                         </ListItem>
                         <ListItem
                             button
@@ -124,10 +139,19 @@ const AdminDashboard = () => {
                         >
                             <ListItemText primary="Dishes" />
                         </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => handleMenuSelect("staff")}
+                        >
+                            <ListItemText primary="RestaurantStaff" />
+                        </ListItem>
                     </List>
                 </Box>
 
                 <Container sx={{ flexGrow: 1, padding: 2 }}>
+                    {selectedMenu === "details" && <RestaurantDetailsAdmin />}
+                    {selectedMenu === "home" && <HomeWelcomeSections />}
+                    {selectedMenu === "homeGallery" && <HomeGallery />}
                     {selectedMenu === "categories" && <FoodCategories />}
                     {selectedMenu === "dishes" && (
                         <Dishes
@@ -138,7 +162,7 @@ const AdminDashboard = () => {
                             handleAddDish={handleAddDish}
                         />
                     )}
-                    {selectedMenu === "home" && <HomeWelcomeSections />}
+                    {selectedMenu === "staff" && <RestaurantStaffAdmin />}
                 </Container>
             </Box>
         </Box>
