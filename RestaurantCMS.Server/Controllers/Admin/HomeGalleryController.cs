@@ -36,8 +36,23 @@ namespace RestaurantCMS.Server.Controllers.Admin
             await _dataContext.SaveChangesAsync();
             return Ok(photo);
         }
+        [HttpPut("EditHomeGallery", Name = "EditHomeGallery"), Authorize]
+        public async Task<IActionResult> EditHomeGallery(HomeGallery photo)
+        {
+            var existingSection = await _dataContext.HomeGallery.FindAsync(photo.Id);
+            if (existingSection == null)
+            {
+                return NotFound($"No section found with ID {photo.Id}");
+            }
 
-        [HttpPut("DeleteHomeGallery", Name ="DeleteHomeGallery"), Authorize]
+            photo.PhotoPath = photo.PhotoPath ?? existingSection.PhotoPath;
+
+            _dataContext.HomeGallery.Update(photo);
+            await _dataContext.SaveChangesAsync();
+            return Ok(existingSection);
+        }
+
+        [HttpDelete("DeleteHomeGallery", Name ="DeleteHomeGallery"), Authorize]
         public async Task<IActionResult> DeleteHomeGallery(int id)
         {
             var photo = await _dataContext.HomeGallery.FindAsync(id);

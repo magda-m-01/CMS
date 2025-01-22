@@ -51,6 +51,11 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
+            if(addtable.MaximumNumberOfPeople == null)
+            {
+                return BadRequest("Nie możesz ustawić maksymalnej ilości ludzi na nic");
+            }
+
             var table = new Table()
             {
                 MaximumNumberOfPeople = addtable.MaximumNumberOfPeople
@@ -60,6 +65,72 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             await _dataContext.SaveChangesAsync();
 
             return Ok(table);
+        }
+        [HttpDelete("DeleteTable", Name = "DeleteTable"), Authorize]
+        public async Task<IActionResult> DeleteTable(int id)
+        {
+            var userId = User?.Identity?.Name;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var table = await _dataContext.Tables.FirstOrDefaultAsync(rs => rs.Id == id);
+
+            if (table == null)
+            {
+                return NotFound($"No table staff found with ID {id}");
+            }
+
+            _dataContext.Tables.Remove(table);
+            await _dataContext.SaveChangesAsync();
+
+            return Ok($"Table with ID {id} has been deleted");
+        }
+
+        [HttpPut("EditTable", Name = "EditTable"), Authorize]
+        public async Task<IActionResult> EditTable(Table table)
+        {
+            var userId = User?.Identity?.Name;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var tableToEdit = await _dataContext.Tables.FirstOrDefaultAsync(rs => rs.Id == table.Id);
+
+            if (tableToEdit == null)
+            {
+                return NotFound($"No restaurant staff found with ID {table.Id}");
+            }
+
+            if (table.MaximumNumberOfPeople == null)
+            {
+                return NotFound($"No restaurant staff found with ID {table.Id}");
+            }
+
+            tableToEdit.MaximumNumberOfPeople = table.MaximumNumberOfPeople;
+
+            _dataContext.Tables.Update(tableToEdit);
+            await _dataContext.SaveChangesAsync();
+
+            return Ok(tableToEdit);
         }
     }
 }

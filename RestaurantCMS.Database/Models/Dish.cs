@@ -6,6 +6,7 @@
         public string? Name { get; set; }
         public decimal? Price { get; set; }
         public bool? IsDishOfDay {  get; set; }
+        public string? Ingredients { get; set; }
         public FoodCategory? Category { get; set; }
         public DateTime CreatedAt {get; set;}
     }

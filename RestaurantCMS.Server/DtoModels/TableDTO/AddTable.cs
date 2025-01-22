@@ -2,6 +2,6 @@
 {
     public class AddTable
     {
-        public int MaximumNumberOfPeople { get; set; }
+        public int? MaximumNumberOfPeople { get; set; }
     }
 }

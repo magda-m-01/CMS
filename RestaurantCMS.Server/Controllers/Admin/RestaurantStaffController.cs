@@ -24,7 +24,7 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
         [HttpGet("GetAllRestaurantStaff", Name = "GetAllRestaurantStaff"), Authorize]
         public async Task<IActionResult> GetAllRestaurantStaff()
         {
-            var tables = await _dataContext.Tables.ToListAsync();
+            var tables = await _dataContext.RestaurantStaff.ToListAsync();
 
             if (tables == null)
             {

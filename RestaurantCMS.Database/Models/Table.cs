@@ -3,6 +3,6 @@
     public class Table
     {
         public int Id { get; set; }
-        public int MaximumNumberOfPeople { get; set; }
+        public int? MaximumNumberOfPeople { get; set; }
     }
 }
