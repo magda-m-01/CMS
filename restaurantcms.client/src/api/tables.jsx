@@ -40,3 +40,20 @@ export const addTableReservation = (token, payload) => {
         }
     );
 };
+
+export const editTable = (token, payload) => {
+    return axios.put("/api/administrator/Table/EditTable", payload, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+};
+
+export const deleteTable = (token, id) => {
+    return axios.delete(`/api/administrator/Table/DeleteTable?id=${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};

@@ -37,7 +37,6 @@ const HomeGallery = () => {
     return (
         <Box
             sx={{
-                padding: 3,
                 backgroundColor: "#f9f9f9",
                 boxSizing: "border-box",
             }}
@@ -53,16 +52,15 @@ const HomeGallery = () => {
                     <CircularProgress />
                 </Box>
             ) : (
-                <Grid container spacing={3} justifyContent="center">
+                <Grid container justifyContent="center">
                     {photos.map((photo) => (
                         <Grid item xs={12} sm={6} md={4} key={photo.id}>
-                            <Card sx={{ boxShadow: 3 }}>
+                            <Card elevation={0} sx={{ borderRadius: 0 }}>
                                 <CardMedia
                                     component="img"
                                     height="300"
                                     image={photo.photoPath}
                                     alt="Gallery Photo"
-                                    sx={{ borderRadius: "4px" }}
                                 />
                             </Card>
                         </Grid>

@@ -10,8 +10,6 @@ import {
     CircularProgress,
     Grid,
     IconButton,
-    MenuItem,
-    Select,
     Snackbar,
     TextField,
     Typography,
@@ -31,12 +29,10 @@ const TableReservations = () => {
     const [availableTables, setAvailableTables] = useState([]);
     const [selectedTable, setSelectedTable] = useState(null);
     const [date, setDate] = useState("");
-    const [time, setTime] = useState("");
     const [numberOfPeople, setNumberOfPeople] = useState("");
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [showSnackbar, setShowSnackbar] = useState(false);
-    const [timeSlots, setTimeSlots] = useState([]);
     const [showTables, setShowTables] = useState(false);
     const token = useSelector((state) => state.auth.token);
     const [showMyReservations, setShowMyReservations] = useState(true);
@@ -60,43 +56,20 @@ const TableReservations = () => {
         fetchTables();
     }, []);
 
-    const generateTimeSlots = (selectedDate) => {
-        const now = new Date();
-        const startOfDay = new Date(selectedDate);
-        startOfDay.setHours(0, 0, 0, 0);
+    const filterAvailableTables = (selectedDate, selectedNumberOfPeople) => {
+        if (!selectedDate || !selectedNumberOfPeople) return;
 
-        const endOfDay = new Date(selectedDate);
-        endOfDay.setHours(23, 59, 59, 999);
+        // Filter out the reservations that match the selected date and number of people
+        const selectedDateTime = new Date(selectedDate);
+        selectedDateTime.setHours(0, 0, 0, 0); // Set to the start of the day
 
-        const slots = [];
-        for (
-            let time = startOfDay;
-            time <= endOfDay;
-            time.setMinutes(time.getMinutes() + 30)
-        ) {
-            if (time > now) {
-                slots.push(new Date(time)); // Only add future slots
-            }
-        }
-        setTimeSlots(slots);
-    };
-
-    const filterAvailableTables = (
-        selectedDate,
-        selectedTime,
-        selectedNumberOfPeople
-    ) => {
-        if (!selectedDate || !selectedTime || !selectedNumberOfPeople) return;
-
-        const selectedDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
-
-        console.log("reservations", reservations);
         const filteredReservations = reservations.filter((reservation) => {
-            const reservationDateTime = new Date(
+            const reservationDate = new Date(
                 reservation.startTimeOfReservation
             );
+            reservationDate.setHours(0, 0, 0, 0); // Set to the start of the day for comparison
             return (
-                reservationDateTime.getTime() === selectedDateTime.getTime() &&
+                reservationDate.getTime() === selectedDateTime.getTime() &&
                 reservation.numberOfPeople === Number(selectedNumberOfPeople)
             );
         });
@@ -120,7 +93,6 @@ const TableReservations = () => {
             (reservation) =>
                 reservation.tableId === tableId &&
                 reservation.date === date &&
-                reservation.time === time &&
                 reservation.numberOfPeople === numberOfPeople
         );
     };
@@ -136,12 +108,10 @@ const TableReservations = () => {
         }
 
         try {
-            console.log("date", date);
-            console.log("time", time);
             await addTableReservation(token, {
                 tableId: selectedTable.id,
                 numberOfPeople: numberOfPeople,
-                date: `${date}T${time}:00`, // Combine date and time for the reservation
+                date: date, // No time needed anymore
             });
             setSuccessMessage(
                 `Table ${selectedTable.id} reserved successfully!`
@@ -158,9 +128,6 @@ const TableReservations = () => {
 
         if (name === "date") {
             setDate(value);
-            generateTimeSlots(value); // Generate available time slots when date changes
-        } else if (name === "time") {
-            setTime(value);
         } else if (name === "numberOfPeople") {
             setNumberOfPeople(value);
         }
@@ -209,32 +176,6 @@ const TableReservations = () => {
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={6}>
-                            <Select
-                                label="Reservation Time"
-                                name="time"
-                                value={time}
-                                onChange={handleInputChange}
-                                fullWidth
-                                displayEmpty
-                                sx={{ marginTop: 2 }}
-                            >
-                                <MenuItem value="" disabled>
-                                    Select a time
-                                </MenuItem>
-                                {timeSlots.map((slot, index) => (
-                                    <MenuItem
-                                        key={index}
-                                        value={slot.toTimeString().slice(0, 5)}
-                                    >
-                                        {slot.toLocaleTimeString([], {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        })}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </Grid>
                     </Grid>
 
                     <Button
@@ -242,9 +183,9 @@ const TableReservations = () => {
                         color="primary"
                         fullWidth
                         onClick={() =>
-                            filterAvailableTables(date, time, numberOfPeople)
+                            filterAvailableTables(date, numberOfPeople)
                         }
-                        disabled={!date || !time || !numberOfPeople}
+                        disabled={!date || !numberOfPeople}
                     >
                         Show Available Tables
                     </Button>

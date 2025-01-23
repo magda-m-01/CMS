@@ -1,7 +1,24 @@
-import React from "react";
-import { Box, Typography, Link, Grid, Divider } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, Divider, Grid } from "@mui/material";
+import { getRestaurantDetailsPage } from "../api/pages";
 
 const Footer = () => {
+    const [details, setDetails] = useState([]);
+
+    // Fetch restaurant details from API
+    const getDetails = async () => {
+        try {
+            const response = await getRestaurantDetailsPage();
+            setDetails(response.data);
+        } catch (error) {
+            console.error("Error fetching restaurant details:", error);
+        }
+    };
+
+    useEffect(() => {
+        getDetails();
+    }, []);
+
     return (
         <Box
             component="footer"
@@ -12,79 +29,41 @@ const Footer = () => {
                 position: "sticky",
             }}
         >
-            <Grid container justifyContent="center" spacing={3}>
-                <Grid item xs={12} sm={4} md={3}>
+            {/* Restaurant Details - Aligned to the Left */}
+            <Grid
+                container
+                sx={{
+                    paddingLeft: 12,
+                    paddingRight: 3,
+                    textAlign: "left",
+                    py: 2,
+                }}
+            >
+                <Grid item xs={12} sm={6}>
                     <Typography variant="h6" gutterBottom>
-                        Company
+                        Restaurant Details
                     </Typography>
-                    <Link href="/about" color="inherit" underline="hover">
-                        About Us
-                    </Link>
-                    <br />
-                    <Link href="/careers" color="inherit" underline="hover">
-                        Careers
-                    </Link>
-                    <br />
-                    <Link href="/blog" color="inherit" underline="hover">
-                        Blog
-                    </Link>
-                </Grid>
-
-                <Grid item xs={12} sm={4} md={3}>
-                    <Typography variant="h6" gutterBottom>
-                        Support
-                    </Typography>
-                    <Link href="/help" color="inherit" underline="hover">
-                        Help Center
-                    </Link>
-                    <br />
-                    <Link href="/contact" color="inherit" underline="hover">
-                        Contact Us
-                    </Link>
-                    <br />
-                    <Link href="/faq" color="inherit" underline="hover">
-                        FAQs
-                    </Link>
-                </Grid>
-
-                <Grid item xs={12} sm={4} md={3}>
-                    <Typography variant="h6" gutterBottom>
-                        Social
-                    </Typography>
-                    <Link
-                        href="https://facebook.com"
-                        color="inherit"
-                        underline="hover"
-                        target="_blank"
-                    >
-                        Facebook
-                    </Link>
-                    <br />
-                    <Link
-                        href="https://twitter.com"
-                        color="inherit"
-                        underline="hover"
-                        target="_blank"
-                    >
-                        Twitter
-                    </Link>
-                    <br />
-                    <Link
-                        href="https://linkedin.com"
-                        color="inherit"
-                        underline="hover"
-                        target="_blank"
-                    >
-                        LinkedIn
-                    </Link>
+                    {details.map((detail) => (
+                        <Box key={detail.id} sx={{ marginBottom: 1 }}>
+                            <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "bold" }}
+                            >
+                                {detail.keyName}:
+                            </Typography>
+                            <Typography variant="body2">
+                                {detail.keyValue}
+                            </Typography>
+                        </Box>
+                    ))}
                 </Grid>
             </Grid>
 
             <Divider sx={{ my: 3 }} />
 
+            {/* All Rights Reserved - Centered */}
             <Typography variant="body2" color="textSecondary" align="center">
-                © {new Date().getFullYear()} Your Company Name. All rights
-                reserved.
+                © {new Date().getFullYear()} All rights reserved.
             </Typography>
         </Box>
     );

@@ -27,8 +27,11 @@ const UserOptions = () => {
 
     return (
         <Box>
-            <IconButton onClick={handleClick}>
-                <AccountCircleIcon sx={{ color: "#fff" }} />
+            <IconButton
+                onClick={handleClick}
+                sx={{ p: 0, px: 2, height: "64px" }}
+            >
+                <AccountCircleIcon sx={{ color: "#333", fontSize: "26px" }} />
             </IconButton>
             <Menu
                 anchorEl={anchorEl}

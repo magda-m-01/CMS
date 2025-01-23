@@ -10,13 +10,20 @@ import {
     Button,
     Paper,
 } from "@mui/material";
-import { getAllTables, addTable } from "../../api/tables";
+import {
+    getAllTables,
+    addTable,
+    editTable,
+    deleteTable,
+} from "../../api/tables";
 import { useSelector } from "react-redux";
 
 const TablesAdmin = () => {
     const [tables, setTables] = useState([]);
     const [newMaximumNumberOfPeople, setNewMaximumNumberOfPeople] =
         useState("");
+    const [editingId, setEditingId] = useState(null);
+    const [editingValue, setEditingValue] = useState("");
     const token = useSelector((state) => state.auth.token);
 
     const fetchTables = async () => {
@@ -33,11 +40,36 @@ const TablesAdmin = () => {
             const response = await addTable(token, {
                 maximumNumberOfPeople: newMaximumNumberOfPeople,
             });
-            console.log("response", response);
             setTables([...tables, response.data]);
             setNewMaximumNumberOfPeople("");
         } catch (error) {
             console.error("Error adding table:", error);
+        }
+    };
+
+    const handleEditTable = async (id) => {
+        try {
+            await editTable(token, { id, maximumNumberOfPeople: editingValue });
+            setTables(
+                tables.map((table) =>
+                    table.id === id
+                        ? { ...table, maximumNumberOfPeople: editingValue }
+                        : table
+                )
+            );
+            setEditingId(null);
+            setEditingValue("");
+        } catch (error) {
+            console.error("Error editing table:", error);
+        }
+    };
+
+    const handleDeleteTable = async (id) => {
+        try {
+            await deleteTable(token, id);
+            setTables(tables.filter((table) => table.id !== id));
+        } catch (error) {
+            console.error("Error deleting table:", error);
         }
     };
 
@@ -53,14 +85,74 @@ const TablesAdmin = () => {
                         <TableRow>
                             <TableCell>Table Number</TableCell>
                             <TableCell>Maximum Number of People</TableCell>
+                            <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {tables.map((table, index) => (
-                            <TableRow key={index}>
+                            <TableRow key={table.id}>
                                 <TableCell>{index + 1}</TableCell>
                                 <TableCell>
-                                    {table.maximumNumberOfPeople}
+                                    {editingId === table.id ? (
+                                        <TextField
+                                            value={editingValue}
+                                            onChange={(e) =>
+                                                setEditingValue(e.target.value)
+                                            }
+                                            type="number"
+                                        />
+                                    ) : (
+                                        table.maximumNumberOfPeople
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingId === table.id ? (
+                                        <>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() =>
+                                                    handleEditTable(table.id)
+                                                }
+                                            >
+                                                Save
+                                            </Button>
+                                            <Button
+                                                variant="outlined"
+                                                color="secondary"
+                                                onClick={() => {
+                                                    setEditingId(null);
+                                                    setEditingValue("");
+                                                }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                variant="outlined"
+                                                color="primary"
+                                                onClick={() => {
+                                                    setEditingId(table.id);
+                                                    setEditingValue(
+                                                        table.maximumNumberOfPeople
+                                                    );
+                                                }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                color="error"
+                                                onClick={() =>
+                                                    handleDeleteTable(table.id)
+                                                }
+                                            >
+                                                Delete
+                                            </Button>
+                                        </>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

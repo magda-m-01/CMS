@@ -16,44 +16,51 @@ import UserOptions from "../UserOptions";
 import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
     const location = useLocation();
 
     const links = [
-        { name: "Home", path: "/" },
-        { name: "Menu", path: "/menu" },
-        { name: "About", path: "/about" },
-        { name: "Reservations", path: "/reservations" },
+        { name: "Home", path: "/", loggedIn: false },
+        { name: "Menu", path: "/menu", loggedIn: false },
+        { name: "About", path: "/about", loggedIn: false },
+        { name: "Reservations", path: "/reservations", loggedIn: true },
     ];
 
     return (
         location.pathname !== "/login" &&
         location.pathname != "/admin_dashboard" && (
             <AppBar position="static" sx={{ width: "100%" }}>
-                <Toolbar>
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                        }}
-                    >
-                        <Typography variant="h6" component="div">
-                            MyBrand
-                        </Typography>
-                    </Box>
-
-                    <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                        {links.map((link) => (
-                            <Button
-                                key={link.name}
-                                color="inherit"
-                                component={Link}
-                                to={link.path}
-                            >
-                                {link.name}
-                            </Button>
-                        ))}
+                <Toolbar
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#333",
+                        background: "#fff",
+                    }}
+                >
+                    <Box sx={{ width: "100%", pl: "58px" }}>
+                        {links.map(
+                            (link) =>
+                                ((link.loggedIn && isLoggedIn) ||
+                                    !link.loggedIn) && (
+                                    <Button
+                                        key={link.name}
+                                        color="inherit"
+                                        component={Link}
+                                        to={link.path}
+                                    >
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 700,
+                                            }}
+                                        >
+                                            {link.name}
+                                        </Typography>
+                                    </Button>
+                                )
+                        )}
                     </Box>
 
                     <UserOptions />

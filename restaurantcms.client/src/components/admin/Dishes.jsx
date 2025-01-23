@@ -15,6 +15,8 @@ import {
     FormControl,
     FormControlLabel,
     Checkbox,
+    Alert,
+    Snackbar,
 } from "@mui/material";
 import { getAllDishes, editDish, addDish, deleteDish } from "../../api/dish";
 import { getAllFoodCategories } from "../../api/foodCategory"; // Assuming this function exists
@@ -26,6 +28,7 @@ const Dishes = () => {
     const [newPrice, setNewPrice] = useState(0);
     const [newIsDishOfDay, setNewIsDishOfDay] = useState(false);
     const [newCategory, setNewCategory] = useState("");
+    const [newIngredients, setNewIngredients] = useState("");
     const [categories, setCategories] = useState([]);
     const [editingDishId, setEditingDishId] = useState(null);
     const [editingDishDetails, setEditingDishDetails] = useState({
@@ -33,7 +36,9 @@ const Dishes = () => {
         price: 0,
         isDishOfDay: false,
         categoryId: "",
+        ingredients: "",
     });
+    const [error, setError] = useState(null); // To store error messages
     const token = useSelector((state) => state.auth.token);
 
     // Fetch dishes
@@ -56,6 +61,12 @@ const Dishes = () => {
         }
     };
 
+    const validateIngredients = (ingredients) => {
+        // Check if ingredients are in the format of comma-separated values
+        const regex = /^[a-zA-Z0-9\s,]+$/; // Only letters, numbers, spaces, and commas allowed
+        return regex.test(ingredients);
+    };
+
     const handleEditDish = (dish) => {
         setEditingDishId(dish.id);
         setEditingDishDetails({
@@ -63,10 +74,17 @@ const Dishes = () => {
             price: dish.price,
             isDishOfDay: dish.isDishOfDay,
             categoryId: dish.category ? dish.category.id : "",
+            ingredients: dish.ingredients || "",
         });
     };
 
     const handleSaveDish = async () => {
+        // Validate ingredients before saving
+        if (!validateIngredients(editingDishDetails.ingredients)) {
+            setError("Ingredients should be a comma-separated list.");
+            return;
+        }
+
         try {
             const selectedCategory = categories.find(
                 (category) => category.id === editingDishDetails.categoryId
@@ -78,6 +96,7 @@ const Dishes = () => {
                 price: editingDishDetails.price,
                 isDishOfDay: editingDishDetails.isDishOfDay,
                 category: { name: selectedCategory.name },
+                ingredients: editingDishDetails.ingredients,
             });
 
             setDishes(
@@ -89,6 +108,7 @@ const Dishes = () => {
                               price: editingDishDetails.price,
                               isDishOfDay: editingDishDetails.isDishOfDay,
                               category: selectedCategory,
+                              ingredients: editingDishDetails.ingredients,
                           }
                         : dish
                 )
@@ -99,6 +119,7 @@ const Dishes = () => {
                 price: 0,
                 isDishOfDay: false,
                 categoryId: "",
+                ingredients: "",
             });
         } catch (error) {
             console.error("Error saving dish:", error);
@@ -112,6 +133,7 @@ const Dishes = () => {
             price: 0,
             isDishOfDay: false,
             categoryId: "",
+            ingredients: "",
         });
     };
 
@@ -125,6 +147,12 @@ const Dishes = () => {
     };
 
     const handleAddNewDish = async () => {
+        // Validate ingredients before adding
+        if (!validateIngredients(newIngredients)) {
+            setError("Ingredients should be a comma-separated list.");
+            return;
+        }
+
         try {
             const selectedCategory = categories.find(
                 (category) => category.id === newCategory
@@ -135,6 +163,7 @@ const Dishes = () => {
                 price: newPrice,
                 isDishOfDay: newIsDishOfDay,
                 category: { name: selectedCategory.name },
+                ingredients: newIngredients,
             });
 
             setDishes([...dishes, response.data]);
@@ -142,6 +171,7 @@ const Dishes = () => {
             setNewPrice(0);
             setNewIsDishOfDay(false);
             setNewCategory("");
+            setNewIngredients(""); // Reset ingredients field
         } catch (error) {
             console.error("Error adding dish:", error);
         }
@@ -154,6 +184,15 @@ const Dishes = () => {
 
     return (
         <div>
+            {/* Error Snackbar */}
+            <Snackbar
+                open={Boolean(error)}
+                autoHideDuration={6000}
+                onClose={() => setError(null)}
+            >
+                <Alert severity="error">{error}</Alert>
+            </Snackbar>
+
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -162,6 +201,7 @@ const Dishes = () => {
                             <TableCell>Price</TableCell>
                             <TableCell>Category</TableCell>
                             <TableCell>Dish of the Day</TableCell>
+                            <TableCell>Ingredients</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
@@ -261,6 +301,25 @@ const Dishes = () => {
                                 </TableCell>
                                 <TableCell>
                                     {editingDishId === dish.id ? (
+                                        <TextField
+                                            value={
+                                                editingDishDetails.ingredients
+                                            }
+                                            onChange={(e) =>
+                                                setEditingDishDetails({
+                                                    ...editingDishDetails,
+                                                    ingredients: e.target.value,
+                                                })
+                                            }
+                                            fullWidth
+                                            label="Ingredients (comma separated)"
+                                        />
+                                    ) : (
+                                        dish.ingredients
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    {editingDishId === dish.id ? (
                                         <>
                                             <Button
                                                 variant="contained"
@@ -303,6 +362,7 @@ const Dishes = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+
             {/* "Add New Dish" Section */}
             <div
                 style={{
@@ -337,6 +397,11 @@ const Dishes = () => {
                         ))}
                     </Select>
                 </FormControl>
+                <TextField
+                    label="Ingredients (comma separated)"
+                    value={newIngredients}
+                    onChange={(e) => setNewIngredients(e.target.value)}
+                />
                 <FormControlLabel
                     control={
                         <Checkbox

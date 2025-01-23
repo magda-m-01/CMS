@@ -1,17 +1,23 @@
 ﻿@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;1,300&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: "Roboto", serif;
+    width: 100%;
+    max-width: 100%;
 }
 
 #root {
-    max-width: 1280px;
     margin: 0;
     padding: 0;
     text-align: center;
+    width: 100%;
+    max-width: 100%;
 }
 
 tr:nth-child(even) {
@@ -20,10 +26,4 @@ tr:nth-child(even) {
 
 tr:nth-child(odd) {
     background: #fff;
-}
-
-th,
-td {
-    padding-left: 1rem;
-    padding-right: 1rem;
 }

@@ -6,13 +6,16 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getDishesPage } from "../api/pages";
 
-const DishesOfTheDay = ({ dishes }) => {
+const DishesOfTheDay = () => {
     const [dishesOfTheDay, setDishesOfTheDay] = useState([]);
     const token = useSelector((state) => state.auth.token);
 
     const getDishes = async () => {
         const response = await getDishesPage(token);
-        const filteredDishes = response.data.filter((dish) => dish.isDishOfDay);
+        const filteredDishes = response.data
+            .flatMap((category) => category.listOfDishes)
+            .filter((dish) => dish.isDishOfDay);
+
         setDishesOfTheDay(filteredDishes);
     };
 
@@ -21,11 +24,7 @@ const DishesOfTheDay = ({ dishes }) => {
     }, []);
 
     return (
-        <Box
-            sx={{
-                padding: "20px",
-            }}
-        >
+        <Box sx={{ padding: "20px" }}>
             <Typography
                 sx={{
                     color: "#111",
@@ -41,7 +40,7 @@ const DishesOfTheDay = ({ dishes }) => {
             </Typography>
             <Grid container spacing={4}>
                 {dishesOfTheDay.map((dish) => (
-                    <Grid item xs={12} sm={6} md={4} key={dish.id}>
+                    <Grid item xs={12} sm={6} md={3} key={dish.id}>
                         <Card
                             sx={{
                                 background: "rgba(255, 255, 255, 0.9)",
@@ -49,23 +48,9 @@ const DishesOfTheDay = ({ dishes }) => {
                                 borderRadius: "15px",
                                 overflow: "hidden",
                                 position: "relative",
+                                border: "3px solid rgba(255, 165, 0, 0.8)",
                             }}
                         >
-                            {/* Gradient overlay */}
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    height: "80px",
-                                    background:
-                                        "linear-gradient(to bottom, rgba(255, 165, 0, 0.8), transparent)",
-                                    zIndex: 1,
-                                }}
-                            ></Box>
-
-                            {/* Star icon badge */}
                             <Box
                                 sx={{
                                     position: "absolute",
@@ -80,7 +65,7 @@ const DishesOfTheDay = ({ dishes }) => {
                                     color="primary"
                                     variant="filled"
                                     sx={{
-                                        backgroundColor: "#ffa726",
+                                        backgroundColor: "rgba(255, 165, 0, 1)",
                                         color: "#fff",
                                         fontWeight: "bold",
                                     }}
@@ -91,13 +76,12 @@ const DishesOfTheDay = ({ dishes }) => {
                                 <Box
                                     sx={{
                                         textAlign: "center",
-                                        marginBottom: "20px",
                                     }}
                                 >
                                     <RestaurantIcon
                                         sx={{
                                             fontSize: 50,
-                                            color: "#ff7043",
+                                            color: "rgba(255, 165, 0, 1)",
                                             marginBottom: "10px",
                                         }}
                                     />
@@ -107,28 +91,23 @@ const DishesOfTheDay = ({ dishes }) => {
                                     >
                                         {dish.name}
                                     </Typography>
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                        sx={{ fontStyle: "italic" }}
-                                    >
-                                        {dish.category.name}
-                                    </Typography>
+                                    {dish.category && (
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            sx={{ fontStyle: "italic" }}
+                                        >
+                                            {dish.category.name}
+                                        </Typography>
+                                    )}
                                 </Box>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                    }}
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ fontStyle: "italic" }}
                                 >
-                                    <Typography
-                                        variant="h6"
-                                        sx={{ fontWeight: "bold" }}
-                                    >
-                                        ${dish.price.toFixed(2)}
-                                    </Typography>
-                                </Box>
+                                    ${dish.price.toFixed(2)}
+                                </Typography>
                             </CardContent>
                         </Card>
                     </Grid>

@@ -11,11 +11,13 @@ import { Box } from "@mui/material";
 import Menu from "./pages/Menu";
 import TableReservations from "./pages/TableReservations";
 import Footer from "./components/Footer";
+import SocialMediaBar from "./components/SocialMediaBar";
 
 function App() {
     return (
-        <Box sx={{ width: "100vw", boxSizing: "border-box" }}>
+        <Box>
             <Router>
+                <SocialMediaBar />
                 <NavBar />
                 <Routes>
                     <Route path="/" element={<Home />} />

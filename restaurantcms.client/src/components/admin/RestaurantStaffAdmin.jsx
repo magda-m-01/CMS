@@ -76,7 +76,7 @@ const RestaurantStaffAdmin = () => {
 
     const handleDeleteStaff = async (id) => {
         try {
-            await deleteRestaurantStaff(token, { id });
+            await deleteRestaurantStaff(token, id);
             setStaff(staff.filter((member) => member.id !== id));
         } catch (error) {
             console.error("Error deleting staff:", error);
@@ -89,7 +89,7 @@ const RestaurantStaffAdmin = () => {
                 name: newName,
                 description: newDescription,
             });
-            setStaff([...staff, response]);
+            setStaff([...staff, response.data]);
             setNewName("");
             setNewDescription("");
         } catch (error) {

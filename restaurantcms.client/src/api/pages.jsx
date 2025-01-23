@@ -19,3 +19,7 @@ export const getRestaurantDetailsPage = (token) => {
 export const getRestaurantStaffPage = (token) => {
     return axios.get("/api/RestaurantStaff/GetRestaurantStaffPage");
 };
+
+export const getSocialMedia = (token) => {
+    return axios.get("/api/SocialMedia/GetSocialMedia");
+};

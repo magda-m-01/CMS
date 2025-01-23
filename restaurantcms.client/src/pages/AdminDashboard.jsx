@@ -23,6 +23,7 @@ import HomeGallery from "../components/admin/HomeGalleries";
 import RestaurantDetailsAdmin from "../components/admin/RestaurantDetailsAdmin";
 import RestaurantStaffAdmin from "../components/admin/RestaurantStaffAdmin";
 import TablesAdmin from "../components/admin/TablesAdmin";
+import SocialMediaAdmin from "../components/admin/SocialMediaAdmin";
 
 const AdminDashboard = () => {
     const [selectedMenu, setSelectedMenu] = useState("details");
@@ -152,6 +153,12 @@ const AdminDashboard = () => {
                         >
                             <ListItemText primary="Tables" />
                         </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => handleMenuSelect("socials")}
+                        >
+                            <ListItemText primary="Socials" />
+                        </ListItem>
                     </List>
                 </Box>
 
@@ -171,6 +178,7 @@ const AdminDashboard = () => {
                     )}
                     {selectedMenu === "staff" && <RestaurantStaffAdmin />}
                     {selectedMenu === "tables" && <TablesAdmin />}
+                    {selectedMenu === "socials" && <SocialMediaAdmin />}
                 </Container>
             </Box>
         </Box>

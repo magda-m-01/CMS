@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        isAdmin: sessionStorage.getItem("isAdmin") || null,
-        isLoggedIn: sessionStorage.getItem("isLoggedIn") || null,
+        isAdmin: sessionStorage.getItem("isAdmin") || false,
+        isLoggedIn: sessionStorage.getItem("isLoggedIn") || false,
         token: sessionStorage.getItem("token") || null,
         username: sessionStorage.getItem("username") || null,
     },

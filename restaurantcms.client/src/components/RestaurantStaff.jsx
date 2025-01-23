@@ -23,11 +23,7 @@ const RestaurantStaff = () => {
     }, []);
 
     return (
-        <Box
-            sx={{
-                padding: "20px",
-            }}
-        >
+        <Box sx={{ padding: "20px" }}>
             <Typography
                 sx={{
                     color: "#111",
@@ -43,31 +39,17 @@ const RestaurantStaff = () => {
             </Typography>
             <Grid container spacing={4}>
                 {staff.map((member) => (
-                    <Grid item xs={12} sm={6} md={4} key={member.id}>
+                    <Grid item xs={12} sm={6} md={3} key={member.id}>
                         <Card
                             sx={{
-                                background: "rgba(240, 248, 255, 0.9)",
+                                background: "rgba(240, 248, 255, 0.9)", // Light blue background
                                 boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
                                 borderRadius: "15px",
                                 overflow: "hidden",
                                 position: "relative",
+                                border: "3px solid rgba(100, 181, 246, 0.8)", // Light blue border
                             }}
                         >
-                            {/* Gradient overlay */}
-                            <Box
-                                sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    height: "80px",
-                                    background:
-                                        "linear-gradient(to bottom, rgba(100, 181, 246, 0.8), transparent)",
-                                    zIndex: 1,
-                                }}
-                            ></Box>
-
-                            {/* Badge */}
                             <Box
                                 sx={{
                                     position: "absolute",
@@ -82,7 +64,7 @@ const RestaurantStaff = () => {
                                     color="primary"
                                     variant="filled"
                                     sx={{
-                                        backgroundColor: "#64b5f6",
+                                        backgroundColor: "#64b5f6", // Blue color
                                         color: "#fff",
                                         fontWeight: "bold",
                                     }}
@@ -93,13 +75,12 @@ const RestaurantStaff = () => {
                                 <Box
                                     sx={{
                                         textAlign: "center",
-                                        marginBottom: "20px",
                                     }}
                                 >
                                     <PersonIcon
                                         sx={{
                                             fontSize: 50,
-                                            color: "#42a5f5",
+                                            color: "#42a5f5", // Blue color
                                             marginBottom: "10px",
                                         }}
                                     />
@@ -115,23 +96,6 @@ const RestaurantStaff = () => {
                                         sx={{ fontStyle: "italic" }}
                                     >
                                         {member.description}
-                                    </Typography>
-                                </Box>
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Typography
-                                        variant="body2"
-                                        color="text.secondary"
-                                    >
-                                        Joined:{" "}
-                                        {new Date(
-                                            member.createdAt
-                                        ).toLocaleDateString()}
                                     </Typography>
                                 </Box>
                             </CardContent>
