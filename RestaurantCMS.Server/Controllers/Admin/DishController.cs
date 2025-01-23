@@ -32,7 +32,23 @@ namespace RestaurantCMS.Server.Controllers.Admin
         public async Task<IActionResult> AddDish(Dish dish)
         {
             dish.CreatedAt = DateTime.UtcNow;
-            await _dataContext.Dishes.AddAsync(dish);
+
+            if (dish == null || dish.Category == null || string.IsNullOrEmpty(dish.Category.Name))
+            {
+                return BadRequest("Muisz przes³aæ wszystkie detale o daniu.");
+            }
+
+            var foodCategroy = _dataContext.FoodCategories.FirstOrDefault(x => x.Name == dish.Category.Name);
+
+            if (foodCategroy == null)
+            {
+                await _dataContext.Dishes.AddAsync(dish);
+            }
+            else
+            {
+                dish.Category = foodCategroy;
+                await _dataContext.Dishes.AddAsync(dish);
+            }
             await _dataContext.SaveChangesAsync();
             return Ok(dish);
         }
@@ -45,10 +61,10 @@ namespace RestaurantCMS.Server.Controllers.Admin
             {
                 return NotFound($"No dish found with ID {dish.Id}");
             }
-
             existingDish.Name = dish.Name ?? existingDish.Name;
             existingDish.Price = dish.Price ?? existingDish.Price;
             existingDish.IsDishOfDay = dish.IsDishOfDay ?? existingDish.IsDishOfDay;
+            existingDish.Ingredients = dish.Ingredients ?? existingDish.Ingredients;
             existingDish.Category = dish.Category ?? existingDish.Category;
             existingDish.CreatedAt = DateTime.UtcNow;
 

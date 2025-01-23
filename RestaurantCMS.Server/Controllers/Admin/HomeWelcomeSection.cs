@@ -53,6 +53,19 @@ namespace RestaurantCMS.Server.Controllers.Admin
             await _dataContext.SaveChangesAsync();
             return Ok(existingSection);
         }
+        [HttpDelete("DeleteHomeWelcomeSection", Name = "DeleteHomeWelcomeSection"), Authorize]
+        public async Task<IActionResult> DeleteHomeWelcomeSection(int id)
+        {
+            var welcomeSection = await _dataContext.HomeWelcomeSections.FindAsync(id);
+            if (welcomeSection == null)
+            {
+                return NotFound($"No photo found with ID {id}");
+            }
+
+            _dataContext.HomeWelcomeSections.Remove(welcomeSection);
+            await _dataContext.SaveChangesAsync();
+            return Ok($"WelcomeSection with ID {id} has been deleted");
+        }
     }
 
-}
+} 

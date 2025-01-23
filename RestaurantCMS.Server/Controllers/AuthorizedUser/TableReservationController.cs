@@ -50,17 +50,74 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
+            var reservationDate = addTableReservation.StartTimeOfReservation.Date;
+
+            var tables = await _dataContext.Tables.ToListAsync();
+            var tableReservations = await _dataContext.TableReservations
+                .Where(tr => tr.StartTimeOfReservation.Date == reservationDate)
+                .ToListAsync();
+
+            var availableTables = tables
+                .Where(t => t.MaximumNumberOfPeople >= addTableReservation.NumberOfPeople &&
+                            !tableReservations.Any(tr => tr.Table != null && tr.Table.Id == t.Id))
+                .ToList();
+
+            if (!availableTables.Any())
+            {
+                return BadRequest("No available tables for the specified date and number of people.");
+            }
+
+            var selectedTable = availableTables.First();
+
             var tableReservation = new TableReservation()
             {
-                StartTimeOfReservation = addTableReservation.StartTimeOfReservation,
+                StartTimeOfReservation = reservationDate,
                 NumberOfPeople = addTableReservation.NumberOfPeople,
-                User = user
+                User = user,
+                Table = selectedTable
             };
 
             await _dataContext.TableReservations.AddAsync(tableReservation);
             await _dataContext.SaveChangesAsync();
 
-            return Ok(tableReservation);
+            return Created();
+        }
+
+
+        [HttpDelete("DeleteTableReservation", Name = "DeleteTableReservation"), Authorize]
+        public async Task<IActionResult> DeleteTableReservation(int id)
+        {
+            var userId = User?.Identity?.Name;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var tableReservation = await _dataContext.TableReservations
+                .Include(x => x.User)
+                .FirstOrDefaultAsync(co => co.Id == id);
+
+            if (tableReservation == null)
+            {
+                return NotFound($"No dish found with ID {id}");
+            }
+
+            if (tableReservation.User != user)
+            {
+                return Unauthorized($"It's not your opinion.");
+            }
+
+            _dataContext.TableReservations.Remove(tableReservation);
+            await _dataContext.SaveChangesAsync();
+            return Ok($"ClientOpinon with ID {id} has been deleted");
         }
     }
 }
