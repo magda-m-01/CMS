@@ -22,6 +22,7 @@ import HomeWelcomeSections from "../components/admin/HomeWelcomeSections";
 import HomeGallery from "../components/admin/HomeGalleries";
 import RestaurantDetailsAdmin from "../components/admin/RestaurantDetailsAdmin";
 import RestaurantStaffAdmin from "../components/admin/RestaurantStaffAdmin";
+import TablesAdmin from "../components/admin/TablesAdmin";
 
 const AdminDashboard = () => {
     const [selectedMenu, setSelectedMenu] = useState("details");
@@ -145,6 +146,12 @@ const AdminDashboard = () => {
                         >
                             <ListItemText primary="RestaurantStaff" />
                         </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => handleMenuSelect("tables")}
+                        >
+                            <ListItemText primary="Tables" />
+                        </ListItem>
                     </List>
                 </Box>
 
@@ -163,6 +170,7 @@ const AdminDashboard = () => {
                         />
                     )}
                     {selectedMenu === "staff" && <RestaurantStaffAdmin />}
+                    {selectedMenu === "tables" && <TablesAdmin />}
                 </Container>
             </Box>
         </Box>

@@ -31,9 +31,7 @@ const HomeWelcomeSection = () => {
                     >
                         <CardMedia
                             component="img"
-                            image={
-                                "https://cdn.pixabay.com/photo/2023/12/06/21/07/photo-8434386_1280.jpg"
-                            }
+                            image={section.photoUrl}
                             alt="Section Image"
                             sx={{
                                 objectFit: "contain",

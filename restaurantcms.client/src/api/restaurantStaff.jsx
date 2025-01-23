@@ -38,7 +38,6 @@ export const editRestaurantStaff = (token, payload) => {
 };
 
 export const deleteRestaurantStaff = (token, id) => {
-    console.log("id", id);
     return axios.delete(
         `/api/administrator/RestaurantStaff/DeleteRestaurantStaff?id=${id}`,
         {

@@ -26,7 +26,6 @@ const HomeGalleries = () => {
     const [photoUrl, setPhotoUrl] = useState("");
     const [error, setError] = useState(null);
 
-    // Fetch the list of photos
     const fetchPhotos = async () => {
         setLoading(true);
         setError(null);
@@ -40,7 +39,6 @@ const HomeGalleries = () => {
         }
     };
 
-    // Add a new photo
     const handleAddPhoto = async () => {
         if (!photoUrl.trim()) {
             setError("Photo URL cannot be empty.");
@@ -50,17 +48,16 @@ const HomeGalleries = () => {
         try {
             await addHomeGallery(token, { photoPath: photoUrl });
             setPhotoUrl("");
-            fetchPhotos(); // Refresh the gallery
+            fetchPhotos();
         } catch (err) {
             setError("Failed to add photo. Please try again later.");
         }
     };
 
-    // Delete a photo
     const handleDeletePhoto = async (id) => {
         try {
             await deleteHomeGallery(token, id);
-            fetchPhotos(); // Refresh the gallery
+            fetchPhotos();
         } catch (err) {
             setError("Failed to delete photo. Please try again later.");
         }
@@ -121,7 +118,7 @@ const HomeGalleries = () => {
                                             handleDeletePhoto(photo.id)
                                         }
                                     >
-                                        <DeleteIcon>Delete</DeleteIcon>
+                                        <DeleteIcon />
                                     </IconButton>
                                 </CardActions>
                             </Card>

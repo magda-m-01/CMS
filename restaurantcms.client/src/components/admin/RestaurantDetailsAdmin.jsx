@@ -84,7 +84,7 @@ const RestaurantDetails = () => {
                 keyName: newKeyName,
                 keyValue: newKeyValue,
             });
-            setDetails([...details, response]);
+            setDetails([...details, response.data]);
             setNewKeyName("");
             setNewKeyValue("");
         } catch (error) {

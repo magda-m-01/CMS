@@ -21,10 +21,10 @@ export const addHomeGallery = (token, payload) => {
     );
 };
 
-export const deleteHomeGallery = (token, payload) => {
+export const deleteHomeGallery = (token, id) => {
     return axios.put(
-        "/api/administrator/HomeGallery/DeleteHomeGallery",
-        payload,
+        `/api/administrator/HomeGallery/DeleteHomeGallery?id=${id}`,
+        {},
         {
             headers: {
                 Authorization: `Bearer ${token}`,
