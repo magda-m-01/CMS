@@ -61,18 +61,24 @@ namespace RestaurantCMS.Server.Controllers.Admin
             {
                 return NotFound($"No dish found with ID {dish.Id}");
             }
+            if(string.IsNullOrEmpty(dish.Category.Name))
+            {
+                return BadRequest("Kategoria nie mo¿ê byæ pusta!");
+            }
+
+            var category = await _dataContext.FoodCategories.FirstOrDefaultAsync(x => x.Name == dish.Category.Name);
+
             existingDish.Name = dish.Name ?? existingDish.Name;
             existingDish.Price = dish.Price ?? existingDish.Price;
             existingDish.IsDishOfDay = dish.IsDishOfDay ?? existingDish.IsDishOfDay;
             existingDish.Ingredients = dish.Ingredients ?? existingDish.Ingredients;
-            existingDish.Category = dish.Category ?? existingDish.Category;
+            existingDish.Category = category ?? dish.Category;
             existingDish.CreatedAt = DateTime.UtcNow;
 
             _dataContext.Dishes.Update(existingDish);
             await _dataContext.SaveChangesAsync();
             return Ok(existingDish);
         }
-
         [HttpDelete("DeleteDish", Name ="DeleteDish"), Authorize]
         public async Task<IActionResult> DeleteDish(int id)
         {

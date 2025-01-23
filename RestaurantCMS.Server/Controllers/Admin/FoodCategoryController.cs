@@ -32,6 +32,14 @@ namespace RestaurantCMS.Server.Controllers.Admin
         public async Task<IActionResult> AddFoodCategory(FoodCategory category)
         {
             category.CreatedAt = DateTime.UtcNow;
+            var categories = await _dataContext.FoodCategories.ToListAsync();
+            var isExisting = categories.Any(x=> x.Name == category.Name);
+
+            if (isExisting)
+            {
+                return BadRequest("Kategoria o tej nazwie istnieje!");
+            }
+
             await _dataContext.FoodCategories.AddAsync(category);
             await _dataContext.SaveChangesAsync();
             return Ok(category);
