@@ -1,14 +1,11 @@
 import axios from "axios";
 
 export const getAllClientsOpinions = (token) => {
-    return axios.get(
-        "/api/authorizeduser/ClientOpinions/GetAllClientsOpinions",
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
+    return axios.get("/api/ClientOpinions/GetAllClientOpinions", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
 export const addClientOpinion = (token, payload) => {
@@ -41,6 +38,29 @@ export const deleteClientOpinion = (token, id) => {
     console.log("id", id);
     return axios.delete(
         `/api/authorizeduser/ClientOpinions/DeleteClientOpinion?id=${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+};
+
+export const getAllClientOpinionsAdmin = (token) => {
+    return axios.get(
+        "/api/administrator/ClientOpinions/GetAllClientOpinionsAdmin",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+};
+
+export const deleteClientOpinionAdmin = (token, id) => {
+    console.log("id", id);
+    return axios.delete(
+        `/api/administrator/ClientOpinions/DeleteClientOpinionAdmin?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

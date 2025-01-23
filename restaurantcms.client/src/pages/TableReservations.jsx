@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import {
     addTableReservation,
     getAllTableReservations,
-    getAllTables,
+    getAllTablesForUser,
 } from "../api/tables";
 import MyReservations from "../components/MyReservations";
 
@@ -36,11 +36,12 @@ const TableReservations = () => {
     const [showTables, setShowTables] = useState(false);
     const token = useSelector((state) => state.auth.token);
     const [showMyReservations, setShowMyReservations] = useState(true);
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
     const fetchTables = async () => {
         try {
             setLoading(true);
-            const tablesResponse = await getAllTables(token);
+            const tablesResponse = await getAllTablesForUser(token);
             const reservationsResponse = await getAllTableReservations(token);
 
             setTables(tablesResponse.data);
@@ -63,21 +64,23 @@ const TableReservations = () => {
         const selectedDateTime = new Date(selectedDate);
         selectedDateTime.setHours(0, 0, 0, 0); // Set to the start of the day
 
+        // Filter reservations for the selected date
+        console.log("reservations", reservations);
         const filteredReservations = reservations.filter((reservation) => {
             const reservationDate = new Date(
                 reservation.startTimeOfReservation
             );
+            console.log("reservationDate", reservationDate);
             reservationDate.setHours(0, 0, 0, 0); // Set to the start of the day for comparison
-            return (
-                reservationDate.getTime() === selectedDateTime.getTime() &&
-                reservation.numberOfPeople === Number(selectedNumberOfPeople)
-            );
+            return reservationDate.getTime() === selectedDateTime.getTime();
         });
 
+        // Get all taken table IDs for the selected date
         const takenTableIds = filteredReservations.map(
             (reservation) => reservation.tableId
         );
 
+        // Filter tables that are not taken and have a sufficient number of seats
         const availableTables = tables.filter(
             (table) =>
                 !takenTableIds.includes(table.id) &&
@@ -108,13 +111,28 @@ const TableReservations = () => {
         }
 
         try {
+            // Parse the selected date to ensure it's valid
+            const selectedDateTime = new Date(date);
+            if (isNaN(selectedDateTime)) {
+                alert("Please select a valid date.");
+                return;
+            }
+
+            // Set the time to a fixed hour, e.g., 12:00 PM (you can customize this if needed)
+            selectedDateTime.setHours(12, 0, 0, 0); // Set to noon or any time of your choosing
+
+            // Format the date to ISO string for API (without overriding with current time)
+            const isoDate = selectedDateTime.toISOString(); // Ensure the format is 'YYYY-MM-DDTHH:mm:ss.sssZ'
+
+            // Call the API to add a reservation with the formatted date
             await addTableReservation(token, {
                 tableId: selectedTable.id,
                 numberOfPeople: numberOfPeople,
-                date: date, // No time needed anymore
+                startTimeOfReservation: isoDate, // Send the selected date with fixed time
             });
+
             setSuccessMessage(
-                `Table ${selectedTable.id} reserved successfully!`
+                `Table ${selectedTable.id} reserved successfully for ${date}!`
             );
             setShowSnackbar(true);
         } catch (error) {
@@ -134,193 +152,212 @@ const TableReservations = () => {
     };
 
     return (
-        <Box sx={{ p: 2 }}>
-            {showMyReservations ? (
-                <MyReservations setShowMyReservations={setShowMyReservations} />
-            ) : (
-                <div>
-                    <Box sx={{ display: "flex" }}>
-                        <IconButton onClick={() => setShowMyReservations(true)}>
-                            <ArrowBackIosIcon />
-                        </IconButton>
-                        <Typography variant="h4" gutterBottom>
-                            Table Reservations
-                        </Typography>
-                    </Box>
+        isLoggedIn && (
+            <Box sx={{ p: 2, py: 5 }}>
+                {showMyReservations ? (
+                    <MyReservations
+                        setShowMyReservations={setShowMyReservations}
+                    />
+                ) : (
+                    <div>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "left",
+                                mb: 2,
+                            }}
+                        >
+                            <IconButton
+                                onClick={() => setShowMyReservations(true)}
+                                sx={{ width: "20px", height: "20px" }}
+                            >
+                                <ArrowBackIosIcon />
+                            </IconButton>
+                            <Typography variant="h4">
+                                Table Reservations
+                            </Typography>
+                        </Box>
 
-                    <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-                        <Grid item xs={6}>
-                            <TextField
-                                type="date"
-                                label="Reservation Date"
-                                fullWidth
-                                name="date"
-                                value={date}
-                                onChange={handleInputChange}
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{
-                                    min: new Date().toISOString().split("T")[0], // Disable past dates
-                                }}
-                            />
+                        <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    type="date"
+                                    label="Reservation Date"
+                                    fullWidth
+                                    name="date"
+                                    value={date}
+                                    onChange={handleInputChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{
+                                        min: new Date()
+                                            .toISOString()
+                                            .split("T")[0], // Disable past dates
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    type="number"
+                                    label="Number of People"
+                                    fullWidth
+                                    name="numberOfPeople"
+                                    value={numberOfPeople}
+                                    onChange={handleInputChange}
+                                    inputProps={{
+                                        min: 1,
+                                    }}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                type="number"
-                                label="Number of People"
-                                fullWidth
-                                name="numberOfPeople"
-                                value={numberOfPeople}
-                                onChange={handleInputChange}
-                                inputProps={{
-                                    min: 1,
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
 
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={() =>
-                            filterAvailableTables(date, numberOfPeople)
-                        }
-                        disabled={!date || !numberOfPeople}
-                    >
-                        Show Available Tables
-                    </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            onClick={() =>
+                                filterAvailableTables(date, numberOfPeople)
+                            }
+                            disabled={!date || !numberOfPeople}
+                        >
+                            Show Available Tables
+                        </Button>
 
-                    {loading ? (
-                        <CircularProgress sx={{ marginTop: 3 }} />
-                    ) : (
-                        <>
-                            {showTables && (
-                                <Grid
-                                    container
-                                    spacing={3}
-                                    sx={{ marginTop: 3 }}
-                                >
-                                    {availableTables.map((table) => {
-                                        const isTaken = isTableTaken(table.id);
-                                        const isSelected =
-                                            selectedTable?.id === table.id;
+                        {loading ? (
+                            <CircularProgress sx={{ marginTop: 3 }} />
+                        ) : (
+                            <>
+                                {showTables && (
+                                    <Grid
+                                        container
+                                        spacing={3}
+                                        sx={{ marginTop: 3 }}
+                                    >
+                                        {availableTables.map((table) => {
+                                            const isTaken = isTableTaken(
+                                                table.id
+                                            );
+                                            const isSelected =
+                                                selectedTable?.id === table.id;
 
-                                        return (
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                sm={6}
-                                                md={4}
-                                                key={table.id}
-                                            >
-                                                <Card
-                                                    sx={{
-                                                        display: "flex",
-                                                        justifyContent:
-                                                            "center",
-                                                        alignItems: "center",
-                                                        padding: 2,
-                                                        cursor: isTaken
-                                                            ? "not-allowed"
-                                                            : "pointer",
-                                                        border: isSelected
-                                                            ? "3px solid"
-                                                            : "2px solid",
-                                                        borderColor:
-                                                            "primary.main",
-                                                        backgroundColor:
-                                                            isSelected
-                                                                ? "primary.main"
-                                                                : "transparent",
-                                                    }}
-                                                    onClick={
-                                                        !isTaken
-                                                            ? () =>
-                                                                  handleTableSelect(
-                                                                      table
-                                                                  )
-                                                            : null
-                                                    }
+                                            return (
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    sm={6}
+                                                    md={4}
+                                                    key={table.id}
                                                 >
-                                                    <CardContent>
-                                                        <TableBarIcon
-                                                            sx={{
-                                                                fontSize: 50,
-                                                                color: isSelected
-                                                                    ? "white"
-                                                                    : "primary.main",
-                                                            }}
-                                                        />
-                                                        <Typography
-                                                            variant="h6"
-                                                            sx={{
-                                                                marginTop: 1,
-                                                                color: isTaken
-                                                                    ? "text.disabled"
-                                                                    : isSelected
-                                                                    ? "grey"
-                                                                    : "primary.main",
-                                                            }}
-                                                        >
-                                                            Table {table.id}
-                                                        </Typography>
-                                                        <Typography
-                                                            variant="body1"
-                                                            sx={{
-                                                                color: isTaken
-                                                                    ? "text.disabled"
-                                                                    : isSelected
-                                                                    ? "white"
-                                                                    : "primary.main",
-                                                            }}
-                                                        >
-                                                            <EventSeatIcon
+                                                    <Card
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent:
+                                                                "center",
+                                                            alignItems:
+                                                                "center",
+                                                            padding: 2,
+                                                            cursor: isTaken
+                                                                ? "not-allowed"
+                                                                : "pointer",
+                                                            border: isSelected
+                                                                ? "3px solid"
+                                                                : "2px solid",
+                                                            borderColor:
+                                                                "primary.main",
+                                                            backgroundColor:
+                                                                isSelected
+                                                                    ? "primary.main"
+                                                                    : "transparent",
+                                                        }}
+                                                        onClick={
+                                                            !isTaken
+                                                                ? () =>
+                                                                      handleTableSelect(
+                                                                          table
+                                                                      )
+                                                                : null
+                                                        }
+                                                    >
+                                                        <CardContent>
+                                                            <TableBarIcon
                                                                 sx={{
-                                                                    fontSize: 16,
+                                                                    fontSize: 50,
+                                                                    color: isSelected
+                                                                        ? "white"
+                                                                        : "primary.main",
                                                                 }}
                                                             />
-                                                            {
-                                                                table.maximumNumberOfPeople
-                                                            }{" "}
-                                                            Seats
-                                                        </Typography>
-                                                    </CardContent>
-                                                </Card>
-                                            </Grid>
-                                        );
-                                    })}
-                                </Grid>
-                            )}
+                                                            <Typography
+                                                                variant="h6"
+                                                                sx={{
+                                                                    marginTop: 1,
+                                                                    color: isTaken
+                                                                        ? "text.disabled"
+                                                                        : isSelected
+                                                                        ? "white"
+                                                                        : "primary.main",
+                                                                }}
+                                                            >
+                                                                Table {table.id}
+                                                            </Typography>
+                                                            <Typography
+                                                                variant="body1"
+                                                                sx={{
+                                                                    color: isTaken
+                                                                        ? "text.disabled"
+                                                                        : isSelected
+                                                                        ? "white"
+                                                                        : "primary.main",
+                                                                }}
+                                                            >
+                                                                <EventSeatIcon
+                                                                    sx={{
+                                                                        fontSize: 16,
+                                                                    }}
+                                                                />
+                                                                {
+                                                                    table.maximumNumberOfPeople
+                                                                }{" "}
+                                                                Seats
+                                                            </Typography>
+                                                        </CardContent>
+                                                    </Card>
+                                                </Grid>
+                                            );
+                                        })}
+                                    </Grid>
+                                )}
 
-                            {showTables && (
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    fullWidth
-                                    sx={{ marginTop: 3 }}
-                                    onClick={handleReservation}
-                                    disabled={!selectedTable}
-                                >
-                                    Reserve Table
-                                </Button>
-                            )}
-                        </>
-                    )}
-                </div>
-            )}
-            <Snackbar
-                open={showSnackbar}
-                autoHideDuration={6000}
-                onClose={() => setShowSnackbar(false)}
-            >
-                <Alert
+                                {showTables && (
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        fullWidth
+                                        sx={{ marginTop: 3 }}
+                                        onClick={handleReservation}
+                                        disabled={!selectedTable}
+                                    >
+                                        Reserve Table
+                                    </Button>
+                                )}
+                            </>
+                        )}
+                    </div>
+                )}
+                <Snackbar
+                    open={showSnackbar}
+                    autoHideDuration={6000}
                     onClose={() => setShowSnackbar(false)}
-                    severity="success"
                 >
-                    {successMessage}
-                </Alert>
-            </Snackbar>
-        </Box>
+                    <Alert
+                        onClose={() => setShowSnackbar(false)}
+                        severity="success"
+                    >
+                        {successMessage}
+                    </Alert>
+                </Snackbar>
+            </Box>
+        )
     );
 };
 

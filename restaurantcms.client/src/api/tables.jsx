@@ -8,6 +8,14 @@ export const getAllTables = (token) => {
     });
 };
 
+export const getAllTablesForUser = (token) => {
+    return axios.get("/api/authorizeduser/Table/GetAllTablesForUser", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const addTable = (token, payload) => {
     return axios.post("/api/administrator/Table/AddTable", payload, {
         headers: {
@@ -28,6 +36,17 @@ export const getAllTableReservations = (token) => {
     );
 };
 
+export const getAllTableReservationsOfSingleUser = (token) => {
+    return axios.get(
+        "/api/authorizeduser/TableReservation/GetAllTableReservationsOfSingleUser",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+};
+
 export const addTableReservation = (token, payload) => {
     return axios.post(
         "/api/authorizeduser/TableReservation/AddTableReservation",
@@ -36,6 +55,30 @@ export const addTableReservation = (token, payload) => {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
+            },
+        }
+    );
+};
+
+export const editTableReservation = (token, payload) => {
+    return axios.put(
+        "/api/authorizeduser/TableReservation/EditTableReservation",
+        payload,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        }
+    );
+};
+
+export const deleteTableReservation = (token, id) => {
+    return axios.delete(
+        `/api/authorizeduser/TableReservation/DeleteTableReservation?id=${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
         }
     );
