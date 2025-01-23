@@ -4,7 +4,11 @@ import React from "react";
 const MyReservations = ({ setShowMyReservations }) => {
     return (
         <Box>
-            <Button onClick={() => setShowMyReservations(false)}>
+            <Button
+                variant="contained"
+                onClick={() => setShowMyReservations(false)}
+                sx={{ marginInlinet: 5 }}
+            >
                 make a new reservation
             </Button>
         </Box>

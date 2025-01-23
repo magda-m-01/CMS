@@ -63,19 +63,13 @@ const Menu = () => {
                                 height: "100%",
                             }}
                         >
-                            {/* Category Icon */}
                             <Box
                                 sx={{
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
-                                    backgroundColor: "#ff7043",
+                                    backgroundColor: "rgba(255, 165, 0, 1)",
                                     padding: "20px",
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    right: 0,
-                                    zIndex: 2,
                                 }}
                             >
                                 <IconButton
@@ -91,7 +85,7 @@ const Menu = () => {
                                 </IconButton>
                             </Box>
 
-                            <CardContent sx={{ paddingTop: "80px" }}>
+                            <CardContent>
                                 <Typography
                                     variant="h5"
                                     sx={{
@@ -118,7 +112,10 @@ const Menu = () => {
                                             <Grid item xs={8}>
                                                 <Typography
                                                     variant="body1"
-                                                    sx={{ fontWeight: "500" }}
+                                                    sx={{
+                                                        fontWeight: "500",
+                                                        textAlign: "left",
+                                                    }}
                                                 >
                                                     {dish.name}
                                                 </Typography>
@@ -131,8 +128,8 @@ const Menu = () => {
                                                                 color: "text.secondary",
                                                                 fontStyle:
                                                                     "italic",
-                                                                marginTop:
-                                                                    "8px",
+                                                                textAlign:
+                                                                    "left",
                                                             }}
                                                         >
                                                             Ingredients:{" "}
@@ -165,7 +162,7 @@ const Menu = () => {
                                                     sx={{
                                                         fontWeight: "bold",
                                                         textAlign: "right",
-                                                        color: "#ff7043",
+                                                        color: "rgba(255, 165, 0, 1)",
                                                     }}
                                                 >
                                                     ${dish.price.toFixed(2)}

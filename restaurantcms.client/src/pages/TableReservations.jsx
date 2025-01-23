@@ -134,7 +134,7 @@ const TableReservations = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{ p: 2 }}>
             {showMyReservations ? (
                 <MyReservations setShowMyReservations={setShowMyReservations} />
             ) : (
@@ -224,11 +224,13 @@ const TableReservations = () => {
                                                             ? "not-allowed"
                                                             : "pointer",
                                                         border: isSelected
-                                                            ? "3px solid blue"
-                                                            : "2px solid blue",
+                                                            ? "3px solid"
+                                                            : "2px solid",
+                                                        borderColor:
+                                                            "primary.main",
                                                         backgroundColor:
                                                             isSelected
-                                                                ? "blue"
+                                                                ? "primary.main"
                                                                 : "transparent",
                                                     }}
                                                     onClick={
@@ -246,7 +248,7 @@ const TableReservations = () => {
                                                                 fontSize: 50,
                                                                 color: isSelected
                                                                     ? "white"
-                                                                    : "blue",
+                                                                    : "primary.main",
                                                             }}
                                                         />
                                                         <Typography
@@ -256,8 +258,8 @@ const TableReservations = () => {
                                                                 color: isTaken
                                                                     ? "text.disabled"
                                                                     : isSelected
-                                                                    ? "white"
-                                                                    : "blue",
+                                                                    ? "grey"
+                                                                    : "primary.main",
                                                             }}
                                                         >
                                                             Table {table.id}
@@ -269,7 +271,7 @@ const TableReservations = () => {
                                                                     ? "text.disabled"
                                                                     : isSelected
                                                                     ? "white"
-                                                                    : "blue",
+                                                                    : "primary.main",
                                                             }}
                                                         >
                                                             <EventSeatIcon
