@@ -24,7 +24,7 @@ namespace RestaurantCMS.Server.Controllers.Admin
         [HttpGet("GetAllTableReservationsAdmin", Name = "GetAllTableReservationsAdmin"), Authorize]
         public async Task<IActionResult> GetAllTableReservationsAdmin()
         {
-            var tableReservations = await _dataContext.TableReservations.Include(x => x.Table).ToListAsync();
+            var tableReservations = await _dataContext.TableReservations.Include(x => x.Table).Include(x => x.User).ToListAsync();
 
             if (tableReservations == null)
             {
