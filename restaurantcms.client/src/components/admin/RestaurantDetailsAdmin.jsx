@@ -33,16 +33,16 @@ const RestaurantDetails = () => {
             const response = await getRestaurantDetails(token);
             let adjustedDetails;
             if (typeof response.data === "string") {
-                adjustedDetails = []; // If it's a string, set to an empty array
+                adjustedDetails = [];
             } else if (
                 typeof response.data === "object" &&
                 !Array.isArray(response.data)
             ) {
-                adjustedDetails = [response.data]; // If it's an object, wrap it in an array
+                adjustedDetails = [response.data];
             } else if (Array.isArray(response.data)) {
-                adjustedDetails = response.data; // If it's already an array, leave it as is
+                adjustedDetails = response.data;
             } else {
-                adjustedDetails = []; // Fallback in case of unexpected data
+                adjustedDetails = [];
             }
 
             setDetails(adjustedDetails);
@@ -98,7 +98,7 @@ const RestaurantDetails = () => {
     const handleDeleteDetail = async (id) => {
         try {
             await deleteRestaurantDetails(token, id);
-            setDetails(details.filter((detail) => detail.id !== id)); // Remove the deleted detail
+            setDetails(details.filter((detail) => detail.id !== id));
         } catch (error) {
             console.error("Error deleting restaurant detail:", error);
         }

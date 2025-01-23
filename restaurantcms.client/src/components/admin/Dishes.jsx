@@ -19,7 +19,7 @@ import {
     Snackbar,
 } from "@mui/material";
 import { getAllDishes, editDish, addDish, deleteDish } from "../../api/dish";
-import { getAllFoodCategories } from "../../api/foodCategory"; // Assuming this function exists
+import { getAllFoodCategories } from "../../api/foodCategory";
 import { useSelector } from "react-redux";
 
 const Dishes = () => {
@@ -38,10 +38,9 @@ const Dishes = () => {
         categoryId: "",
         ingredients: "",
     });
-    const [error, setError] = useState(null); // To store error messages
+    const [error, setError] = useState(null);
     const token = useSelector((state) => state.auth.token);
 
-    // Fetch dishes
     const fetchDishes = async () => {
         try {
             const response = await getAllDishes(token);
@@ -51,7 +50,6 @@ const Dishes = () => {
         }
     };
 
-    // Fetch categories
     const fetchCategories = async () => {
         try {
             const response = await getAllFoodCategories(token);
@@ -62,8 +60,7 @@ const Dishes = () => {
     };
 
     const validateIngredients = (ingredients) => {
-        // Check if ingredients are in the format of comma-separated values
-        const regex = /^[a-zA-Z0-9\s,]+$/; // Only letters, numbers, spaces, and commas allowed
+        const regex = /^[a-zA-Z0-9\s,]+$/;
         return regex.test(ingredients);
     };
 
@@ -79,7 +76,6 @@ const Dishes = () => {
     };
 
     const handleSaveDish = async () => {
-        // Validate ingredients before saving
         if (!validateIngredients(editingDishDetails.ingredients)) {
             setError("Ingredients should be a comma-separated list.");
             return;
@@ -147,7 +143,6 @@ const Dishes = () => {
     };
 
     const handleAddNewDish = async () => {
-        // Validate ingredients before adding
         if (!validateIngredients(newIngredients)) {
             setError("Ingredients should be a comma-separated list.");
             return;
@@ -171,7 +166,7 @@ const Dishes = () => {
             setNewPrice(0);
             setNewIsDishOfDay(false);
             setNewCategory("");
-            setNewIngredients(""); // Reset ingredients field
+            setNewIngredients("");
         } catch (error) {
             console.error("Error adding dish:", error);
         }
@@ -184,7 +179,6 @@ const Dishes = () => {
 
     return (
         <div>
-            {/* Error Snackbar */}
             <Snackbar
                 open={Boolean(error)}
                 autoHideDuration={6000}
@@ -363,7 +357,6 @@ const Dishes = () => {
                 </Table>
             </TableContainer>
 
-            {/* "Add New Dish" Section */}
             <div
                 style={{
                     marginTop: "16px",

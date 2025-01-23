@@ -14,15 +14,14 @@ import {
 import {
     getAllClientOpinionsAdmin,
     deleteClientOpinionAdmin,
-} from "../../api/clientOpinions"; // Assuming these API functions exist
+} from "../../api/clientOpinions";
 import { useSelector } from "react-redux";
 
 const ClientOpinionsAdmin = () => {
     const [opinions, setOpinions] = useState([]);
-    const [error, setError] = useState(null); // To store error messages
+    const [error, setError] = useState(null);
     const token = useSelector((state) => state.auth.token);
 
-    // Fetch opinions
     const fetchOpinions = async () => {
         try {
             const response = await getAllClientOpinionsAdmin(token);
@@ -33,7 +32,6 @@ const ClientOpinionsAdmin = () => {
         }
     };
 
-    // Delete opinion
     const handleDeleteOpinion = async (id) => {
         try {
             await deleteClientOpinionAdmin(token, id);
@@ -50,7 +48,6 @@ const ClientOpinionsAdmin = () => {
 
     return (
         <div>
-            {/* Error Snackbar */}
             <Snackbar
                 open={Boolean(error)}
                 autoHideDuration={6000}

@@ -56,7 +56,7 @@ const ClientOpinions = () => {
     const handleAddOpinion = async () => {
         try {
             const addedOpinion = await addClientOpinion(token, newOpinion);
-            setOpinions((prev) => [addedOpinion.data, ...prev]); // Add the new opinion to the top
+            setOpinions((prev) => [addedOpinion.data, ...prev]);
             setNewOpinion({ title: "", content: "" });
             setOpenDialog(false);
         } catch (err) {
@@ -67,7 +67,7 @@ const ClientOpinions = () => {
     const handleDeleteOpinion = async (id) => {
         try {
             await deleteClientOpinion(token, id);
-            setOpinions((prev) => prev.filter((opinion) => opinion.id !== id)); // Remove deleted opinion
+            setOpinions((prev) => prev.filter((opinion) => opinion.id !== id));
         } catch (err) {
             setError("Failed to delete the opinion. Please try again later.");
         }
@@ -140,7 +140,7 @@ const ClientOpinions = () => {
             )}
             <Box display="flex" flexDirection="column" gap={2}>
                 {opinions
-                    .sort((a, b) => (a.user.userName === username ? -1 : 1)) // Sort logged-in user's opinions to the top
+                    .sort((a, b) => (a.user.userName === username ? -1 : 1))
                     .map((opinion) => (
                         <Card
                             key={opinion.id}
@@ -148,7 +148,7 @@ const ClientOpinions = () => {
                                 backgroundColor:
                                     opinion.user &&
                                     opinion.user.userName === username
-                                        ? "rgba(173, 216, 230, 0.5)" // Sheer blue background for logged-in user's opinions
+                                        ? "rgba(173, 216, 230, 0.5)"
                                         : "white",
                                 textAlign: "left",
                                 position: "relative",
@@ -164,7 +164,7 @@ const ClientOpinions = () => {
                                             sx={{
                                                 position: "absolute",
                                                 top: 8,
-                                                right: 48, // Spaced left from the delete button
+                                                right: 48,
                                                 color: "primary.main",
                                             }}
                                         >
@@ -260,7 +260,6 @@ const ClientOpinions = () => {
                     </DialogActions>
                 </Dialog>
             )}
-            {/* Edit Review Dialog */}
             {isLoggedIn && (
                 <Dialog
                     open={openEditDialog}

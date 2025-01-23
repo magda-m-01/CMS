@@ -22,17 +22,16 @@ import { useSelector } from "react-redux";
 
 const SocialMediaAdmin = () => {
     const [socialMediaLinks, setSocialMediaLinks] = useState([]);
-    const [newLogoPath, setNewLogoPath] = useState(""); // Logo URL for new social media
-    const [newUrl, setNewUrl] = useState(""); // URL for new social media link
-    const [editingLinkId, setEditingLinkId] = useState(null); // ID of the link currently being edited
+    const [newLogoPath, setNewLogoPath] = useState("");
+    const [newUrl, setNewUrl] = useState("");
+    const [editingLinkId, setEditingLinkId] = useState(null);
     const [editingLinkDetails, setEditingLinkDetails] = useState({
         logoPath: "",
         url: "",
     });
-    const [error, setError] = useState(null); // To store error messages
+    const [error, setError] = useState(null);
     const token = useSelector((state) => state.auth.token);
 
-    // Fetch social media links
     const fetchSocialMediaLinks = async () => {
         try {
             const response = await getAllSocialMedia(token);
@@ -52,7 +51,6 @@ const SocialMediaAdmin = () => {
     };
 
     const handleSaveLink = async () => {
-        // If editing an existing link
         if (editingLinkId) {
             try {
                 const response = await editSocialMedia(
@@ -71,23 +69,21 @@ const SocialMediaAdmin = () => {
                 console.error("Error saving social media link:", error);
             }
         } else {
-            // If adding a new link
             const newLinkData = {
-                logoPath: newLogoPath, // The logo path for the new social media link
-                url: newUrl, // The URL for the new social media link
+                logoPath: newLogoPath,
+                url: newUrl,
             };
 
             try {
                 const response = await addSocialMedia(token, newLinkData);
                 setSocialMediaLinks([...socialMediaLinks, response.data]);
-                setNewLogoPath(""); // Clear the input for the new logo path
-                setNewUrl(""); // Clear the input for the new URL
+                setNewLogoPath("");
+                setNewUrl("");
             } catch (error) {
                 console.error("Error adding new social media link:", error);
             }
         }
 
-        // Reset after save
         setEditingLinkId(null);
         setEditingLinkDetails({ logoPath: "", url: "" });
     };
@@ -110,7 +106,6 @@ const SocialMediaAdmin = () => {
 
     return (
         <div>
-            {/* Error Snackbar */}
             <Snackbar
                 open={Boolean(error)}
                 autoHideDuration={6000}
@@ -136,7 +131,7 @@ const SocialMediaAdmin = () => {
                             <TableRow key={link.id}>
                                 <TableCell
                                     style={{
-                                        verticalAlign: "middle", // Align the content vertically in the middle
+                                        verticalAlign: "middle",
                                         padding: "8px",
                                     }}
                                 >
@@ -166,10 +161,10 @@ const SocialMediaAdmin = () => {
                                 </TableCell>
                                 <TableCell
                                     style={{
-                                        verticalAlign: "middle", // Align the content vertically in the middle
+                                        verticalAlign: "middle",
                                         padding: "8px",
-                                        wordWrap: "break-word", // Allow text wrapping within the cell
-                                        maxWidth: "300px", // Limit the column width
+                                        wordWrap: "break-word",
+                                        maxWidth: "300px",
                                     }}
                                 >
                                     {editingLinkId === link.id ? (
@@ -189,7 +184,7 @@ const SocialMediaAdmin = () => {
                                 </TableCell>
                                 <TableCell
                                     style={{
-                                        verticalAlign: "middle", // Align the content vertically in the middle
+                                        verticalAlign: "middle",
                                     }}
                                 >
                                     {editingLinkId === link.id ? (
@@ -236,7 +231,6 @@ const SocialMediaAdmin = () => {
                 </Table>
             </TableContainer>
 
-            {/* "Add New Social Media Link" Section */}
             <div
                 style={{
                     marginTop: "16px",

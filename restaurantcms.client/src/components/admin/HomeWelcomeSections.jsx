@@ -28,7 +28,7 @@ const HomeWelcomeSections = () => {
         photoUrl: "",
         content: "",
     });
-    const [isAdding, setIsAdding] = useState(false); // Controls "Add Section" form visibility
+    const [isAdding, setIsAdding] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
@@ -48,7 +48,6 @@ const HomeWelcomeSections = () => {
     };
 
     const handleAddSection = async () => {
-        // Prevent adding if photoUrl is empty
         if (!editData.photoUrl.trim()) {
             setErrorMessage("Photo URL is required to add a section.");
             return;
@@ -61,9 +60,9 @@ const HomeWelcomeSections = () => {
             };
             const response = await addHomeWelcomeSection(token, newSection);
             setSections([...sections, response.data]);
-            setIsAdding(false); // Close the "Add" form after submission
-            setEditData({ id: null, photoUrl: "", content: "" }); // Reset the form
-            setErrorMessage(""); // Clear any errors
+            setIsAdding(false);
+            setEditData({ id: null, photoUrl: "", content: "" });
+            setErrorMessage("");
         } catch (error) {
             console.error("Failed to add section", error);
             setErrorMessage("Failed to add section. Please try again.");
@@ -120,7 +119,7 @@ const HomeWelcomeSections = () => {
                 color="primary"
                 onClick={() => {
                     setIsAdding(true);
-                    setEditData({ id: null, photoUrl: "", content: "" }); // Reset form for new section
+                    setEditData({ id: null, photoUrl: "", content: "" });
                 }}
                 sx={{ marginBottom: 4 }}
             >
