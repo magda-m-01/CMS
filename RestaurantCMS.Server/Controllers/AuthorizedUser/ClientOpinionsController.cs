@@ -61,7 +61,7 @@ namespace RestaurantCMS.Server.Controllers.AuthorizedUser
 
             return Ok(clientOpinion);
         }
-        [HttpPost("EditClientOpinion", Name = "EditClientOpinion"), Authorize]
+        [HttpPut("EditClientOpinion", Name = "EditClientOpinion"), Authorize]
         public async Task<IActionResult> EditClientOpinion(EditClientOpinion editClientOpinion)
         {
             var userId = User?.Identity?.Name;
