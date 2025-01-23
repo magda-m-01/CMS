@@ -48,12 +48,12 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
 
             var usersTabeleReservations = tableReservations.Where(x => x.User == user).ToList();
 
-            if (tableReservations == null)
+            if (usersTabeleReservations == null)
             {
                 return NotFound();
             }
 
-            return Ok(tableReservations);
+            return Ok(usersTabeleReservations);
         }
 
         [HttpPost("AddTableReservation", Name = "AddTableReservation"), Authorize]

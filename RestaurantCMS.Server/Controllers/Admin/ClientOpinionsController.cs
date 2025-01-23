@@ -53,15 +53,10 @@ namespace RestaurantCMS.Server.Controllers.Admin
                 return NotFound($"No restaurant staff found with ID {editClientOpinion.Id}");
             }
 
-            var editedClientOpinion = new ClientOpinion()
-            {
-                Id = editClientOpinion.Id,
-                Title = editClientOpinion.Title,
-                Content = editClientOpinion.Content,
-                User = user
-            };
+            clientOpinion.Title = editClientOpinion.Title;
+            clientOpinion.Content = editClientOpinion.Content;
 
-            _dataContext.ClientOpinions.Update(editedClientOpinion);
+            _dataContext.ClientOpinions.Update(clientOpinion);
             await _dataContext.SaveChangesAsync();
 
             return Ok(clientOpinion);

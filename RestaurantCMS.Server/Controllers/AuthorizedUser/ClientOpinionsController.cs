@@ -90,18 +90,13 @@ namespace RestaurantCMS.Server.Controllers.AuthorizedUser
                 return NotFound($"It's not your opinion you twat");
             }
 
-            var editedClientOpinion = new ClientOpinion()
-            {
-                Id = editClientOpinion.Id,
-                Title = editClientOpinion.Title,
-                Content = editClientOpinion.Content,
-                User = user
-            };
+            clientOpinion.Content = editClientOpinion.Content;
+            clientOpinion.Title = editClientOpinion.Title;
 
-            _dataContext.ClientOpinions.Update(editedClientOpinion);
+            _dataContext.ClientOpinions.Update(clientOpinion);
             await _dataContext.SaveChangesAsync();
 
-            return Ok(clientOpinion);
+            return Ok();
         }
         [HttpDelete("DeleteClientOpinion", Name = "DeleteClientOpinion"), Authorize]
         public async Task<IActionResult> DeleteClientOpinion(int id)
