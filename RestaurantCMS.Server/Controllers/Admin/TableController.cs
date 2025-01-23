@@ -21,7 +21,7 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             _dataContext = dataContext;
         }
 
-        [HttpGet("GetAllTables",Name = "GetAllTables"), Authorize]
+        [HttpGet("GetAllTables", Name = "GetAllTables"), Authorize]
         public async Task<IActionResult> GetAllTables()
         {
             var tables = await _dataContext.Tables.ToListAsync();
@@ -51,7 +51,7 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
-            if(addtable.MaximumNumberOfPeople == null)
+            if (addtable.MaximumNumberOfPeople == null || addtable.MaximumNumberOfPeople <= 0)
             {
                 return BadRequest("Nie możesz ustawić maksymalnej ilości ludzi na nic");
             }
@@ -120,9 +120,9 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound($"No restaurant staff found with ID {table.Id}");
             }
 
-            if (table.MaximumNumberOfPeople == null)
+            if (table.MaximumNumberOfPeople == null || table.MaximumNumberOfPeople <= 0)
             {
-                return NotFound($"No restaurant staff found with ID {table.Id}");
+                return NotFound($"Niepoprawny format maksymalnej liczby osób przy stoliku!");
             }
 
             tableToEdit.MaximumNumberOfPeople = table.MaximumNumberOfPeople;

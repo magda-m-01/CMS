@@ -32,6 +32,12 @@ namespace RestaurantCMS.Server.Controllers.Admin
         public async Task<IActionResult> AddHomeWelcomeSection(HomeWelcomeSection section)
         {
             section.CreatedAt = DateTime.UtcNow;
+
+            if (string.IsNullOrEmpty(section.PhotoUrl))
+            {
+                return BadRequest("Podaj wszystkie paramtery!");
+            }
+
             await _dataContext.HomeWelcomeSections.AddAsync(section);
             await _dataContext.SaveChangesAsync();
             return Ok(section);

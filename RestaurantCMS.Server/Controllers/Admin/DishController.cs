@@ -28,12 +28,12 @@ namespace RestaurantCMS.Server.Controllers.Admin
             return Ok(dishes);
         }
 
-        [HttpPost("AddDish",Name = "AddDish"), Authorize]
+        [HttpPost("AddDish", Name = "AddDish"), Authorize]
         public async Task<IActionResult> AddDish(Dish dish)
         {
             dish.CreatedAt = DateTime.UtcNow;
 
-            if (dish == null || dish.Category == null || string.IsNullOrEmpty(dish.Category.Name))
+            if (dish == null || dish.Category == null || string.IsNullOrEmpty(dish.Category.Name) || string.IsNullOrEmpty(dish.Name) || dish.Price == null || dish.Price < 0)
             {
                 return BadRequest("Muisz przes³aæ wszystkie detale o daniu.");
             }

@@ -51,6 +51,11 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
+            if (string.IsNullOrEmpty(addRestaurantStaff.Name))
+            {
+                return BadRequest("Podaj imie paremtery!");
+            }
+
             var restaurantStaff = new RestaurantStaff()
             {
                 Name = addRestaurantStaff.Name,
