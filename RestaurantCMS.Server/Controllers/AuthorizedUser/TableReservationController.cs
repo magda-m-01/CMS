@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantCMS.Database;
 using RestaurantCMS.Database.Models;
 using RestaurantCMS.Server.DtoModels;
+using RestaurantCMS.Server.DtoModels.TableReservationDTO;
 
 namespace RestaurantCMS.Server.Controllers.LoggedUser
 {
@@ -142,5 +143,42 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             await _dataContext.SaveChangesAsync();
             return Ok($"ClientOpinon with ID {id} has been deleted");
         }
+        [HttpPost("GetAvailableTablesForDateAndPeople", Name = "GetAvailableTablesForDateAndPeople"), Authorize]
+        public async Task<IActionResult> GetAvailableTablesForDateAndPeople([FromBody] GetAvailableTables getAvailableTables)
+        {
+            var userId = User?.Identity?.Name;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            if (getAvailableTables.NumberOfPeople == null)
+            {
+                return BadRequest("You have to pass all data");
+            }
+
+            var reservationDate = getAvailableTables.ReservationDate.Date;
+
+            var tables = await _dataContext.Tables.ToListAsync();
+            var tableReservations = await _dataContext.TableReservations
+                .Where(tr => tr.StartTimeOfReservation.Date == reservationDate)
+                .ToListAsync();
+
+            var availableTables = tables
+                .Where(t => t.MaximumNumberOfPeople >= getAvailableTables.NumberOfPeople &&
+                            !tableReservations.Any(tr => tr.Table != null && tr.Table.Id == t.Id))
+                .ToList();
+
+            return Ok(availableTables);
+        }
+
     }
 }
