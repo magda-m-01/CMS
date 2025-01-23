@@ -24,7 +24,15 @@ namespace RestaurantCMS.Server.Controllers.Shared
         [HttpGet("GetAllClientOpinions", Name = "GetAllClientOpinions")]
         public async Task<IActionResult> GetAllClientOpinionsAdmin()
         {
-            var dishes = await _dataContext.ClientOpinions.Include(d => d.User!.Email).ToListAsync();
+            var dishes = await _dataContext.ClientOpinions.Include(d => d.User).ToListAsync();
+            
+
+            foreach(var dish in dishes)
+            {
+                dish.User.PasswordHash = null;
+                dish.User.PhoneNumber = null;
+                dish.User.SecurityStamp = null;
+            }
             return Ok(dishes);
         }
     }
