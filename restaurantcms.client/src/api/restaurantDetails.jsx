@@ -36,3 +36,15 @@ export const editRestaurantDetails = (token, payload) => {
         }
     );
 };
+
+export const deleteRestaurantDetails = (token, id) => {
+    console.log("id", id);
+    return axios.delete(
+        `/api/administrator/RestaurantDetails/DeleteRestaurantDetails?id=${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+};

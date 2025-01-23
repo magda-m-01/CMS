@@ -9,11 +9,14 @@ import {
     TextField,
     Button,
     Paper,
+    IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
     getRestaurantDetails,
     addRestaurantDetails,
     editRestaurantDetails,
+    deleteRestaurantDetails,
 } from "../../api/restaurantDetails";
 import { useSelector } from "react-redux";
 
@@ -92,6 +95,15 @@ const RestaurantDetails = () => {
         }
     };
 
+    const handleDeleteDetail = async (id) => {
+        try {
+            await deleteRestaurantDetails(token, id);
+            setDetails(details.filter((detail) => detail.id !== id)); // Remove the deleted detail
+        } catch (error) {
+            console.error("Error deleting restaurant detail:", error);
+        }
+    };
+
     useEffect(() => {
         fetchDetails();
     }, []);
@@ -163,6 +175,19 @@ const RestaurantDetails = () => {
                                                 >
                                                     Edit
                                                 </Button>
+                                                <IconButton
+                                                    onClick={() =>
+                                                        handleDeleteDetail(
+                                                            detail.id
+                                                        )
+                                                    }
+                                                    color="error"
+                                                    sx={{
+                                                        marginLeft: "8px",
+                                                    }}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
                                             </>
                                         )}
                                     </TableCell>

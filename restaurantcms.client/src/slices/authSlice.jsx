@@ -6,8 +6,13 @@ const authSlice = createSlice({
         isAdmin: sessionStorage.getItem("isAdmin") || null,
         isLoggedIn: sessionStorage.getItem("isLoggedIn") || null,
         token: sessionStorage.getItem("token") || null,
+        username: sessionStorage.getItem("username") || null,
     },
     reducers: {
+        setUsername: (state, action) => {
+            state.username = action.payload;
+            sessionStorage.setItem("username", action.payload);
+        },
         setIsAdmin: (state, action) => {
             state.isAdmin = action.payload;
             sessionStorage.setItem("isAdmin", action.payload);
@@ -24,10 +29,12 @@ const authSlice = createSlice({
                 sessionStorage.removeItem("token");
                 sessionStorage.removeItem("isLoggedIn");
                 sessionStorage.removeItem("isAdmin");
+                sessionStorage.removeItem("username");
             }
         },
     },
 });
 
-export const { setIsAdmin, setIsLoggedIn, setToken } = authSlice.actions;
+export const { setUsername, setIsAdmin, setIsLoggedIn, setToken } =
+    authSlice.actions;
 export default authSlice.reducer;

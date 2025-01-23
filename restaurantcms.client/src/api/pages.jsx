@@ -17,5 +17,5 @@ export const getRestaurantDetailsPage = (token) => {
 };
 
 export const getRestaurantStaffPage = (token) => {
-    return axios.get("/api/RestaurantDetails/GetRestaurantStaffPage");
+    return axios.get("/api/RestaurantStaff/GetRestaurantStaffPage");
 };

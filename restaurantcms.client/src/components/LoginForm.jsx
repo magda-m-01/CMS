@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { login } from "../api/neutralEndpoints";
 import { useDispatch } from "react-redux";
-import { setToken } from "../slices/authSlice";
+import { setToken, setUsername } from "../slices/authSlice";
 import { setIsAdmin } from "../slices/authSlice";
 import { getAllTables } from "../api/adminEndpoints";
 import { useSelector } from "react-redux";
@@ -25,6 +25,7 @@ const LoginForm = () => {
     const loginUser = async () => {
         try {
             const response = await login(formData);
+            await dispatch(setUsername(formData.email));
             await dispatch(setToken(response.data.accessToken));
 
             try {

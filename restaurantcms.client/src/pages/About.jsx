@@ -11,6 +11,7 @@ import {
     Paper,
     Typography,
 } from "@mui/material";
+import ClientOpinions from "../components/ClientOpinions";
 
 const About = () => {
     const [details, setDetails] = useState([]);
@@ -38,6 +39,7 @@ const About = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <ClientOpinions />
         </Box>
     );
 };

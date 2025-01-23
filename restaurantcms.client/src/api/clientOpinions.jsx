@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const getHomeWelcomeSections = (token) => {
+export const getAllClientsOpinions = (token) => {
     return axios.get(
-        "/api/administrator/HomeWelcomeSection/GetHomeWelcomeSections",
+        "/api/authorizeduser/ClientOpinions/GetAllClientsOpinions",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -11,9 +11,9 @@ export const getHomeWelcomeSections = (token) => {
     );
 };
 
-export const addHomeWelcomeSection = (token, payload) => {
+export const addClientOpinion = (token, payload) => {
     return axios.post(
-        "/api/administrator/HomeWelcomeSection/AddHomeWelcomeSection",
+        "/api/authorizeduser/ClientOpinions/AddClientOpinion",
         payload,
         {
             headers: {
@@ -24,9 +24,9 @@ export const addHomeWelcomeSection = (token, payload) => {
     );
 };
 
-export const editHomeWelcomeSection = (token, payload) => {
+export const editClientOpinion = (token, payload) => {
     return axios.put(
-        "/api/administrator/HomeWelcomeSection/EditHomeWelcomeSection",
+        "/api/authorizeduser/ClientOpinions/EditClientOpinion",
         payload,
         {
             headers: {
@@ -37,10 +37,10 @@ export const editHomeWelcomeSection = (token, payload) => {
     );
 };
 
-export const deleteHomeWelcomeSection = (token, id) => {
+export const deleteClientOpinion = (token, id) => {
     console.log("id", id);
     return axios.delete(
-        `/api/administrator/HomeWelcomeSection/DeleteHomeWelcomeSection?id=${id}`,
+        `/api/authorizeduser/ClientOpinions/DeleteClientOpinion?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
