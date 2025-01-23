@@ -92,12 +92,13 @@ namespace RestaurantCMS.Server.Controllers.AuthorizedUser
 
             var editedClientOpinion = new ClientOpinion()
             {
+                Id = editClientOpinion.Id,
                 Title = editClientOpinion.Title,
                 Content = editClientOpinion.Content,
                 User = user
             };
 
-            await _dataContext.ClientOpinions.AddAsync(editedClientOpinion);
+            _dataContext.ClientOpinions.Update(editedClientOpinion);
             await _dataContext.SaveChangesAsync();
 
             return Ok(clientOpinion);

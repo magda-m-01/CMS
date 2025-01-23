@@ -29,7 +29,7 @@ namespace RestaurantCMS.Server.Controllers.Admin
             return Ok(dishes);
         }
 
-        [HttpPost("EditClientOpinionAdmin", Name = "EditClientOpinionAdmin"), Authorize]
+        [HttpPut("EditClientOpinionAdmin", Name = "EditClientOpinionAdmin"), Authorize]
         public async Task<IActionResult> EditClientOpinionAdmin(EditClientOpinion editClientOpinion)
         {
             var userId = User?.Identity?.Name;
@@ -55,12 +55,13 @@ namespace RestaurantCMS.Server.Controllers.Admin
 
             var editedClientOpinion = new ClientOpinion()
             {
+                Id = editClientOpinion.Id,
                 Title = editClientOpinion.Title,
                 Content = editClientOpinion.Content,
                 User = user
             };
 
-            await _dataContext.ClientOpinions.AddAsync(editedClientOpinion);
+            _dataContext.ClientOpinions.Update(editedClientOpinion);
             await _dataContext.SaveChangesAsync();
 
             return Ok(clientOpinion);
@@ -72,7 +73,7 @@ namespace RestaurantCMS.Server.Controllers.Admin
             var clientOpinion = await _dataContext.ClientOpinions.FindAsync(id);
             if (clientOpinion == null)
             {
-                return NotFound($"No dish found with ID {id}");
+                return NotFound($"No client opinon found with ID {id}");
             }
 
             _dataContext.ClientOpinions.Remove(clientOpinion);

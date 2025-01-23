@@ -23,7 +23,30 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
         [HttpGet("GetAllTableReservations", Name = "GetTablesResrvations"), Authorize]
         public async Task<IActionResult> GetTablesResrvations()
         {
-            var tableReservations = await _dataContext.TableReservations.ToListAsync();
+            var tableReservations = await _dataContext.TableReservations.Include(x => x.Table).ToListAsync();
+
+            if (tableReservations == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(tableReservations);
+        }
+        [HttpGet("GetAllTableReservationsOfSingleUser", Name = "GetAllTableReservationsOfSingleUser"), Authorize]
+        public async Task<IActionResult> GetAllTableReservationsOfSingleUser()
+        {
+            var userId = User?.Identity?.Name;
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var user = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName == userId);
+
+            var tableReservations = await _dataContext.TableReservations.Include(x => x.Table).ToListAsync();
+
+            var usersTabeleReservations = tableReservations.Where(x => x.User == user).ToList();
 
             if (tableReservations == null)
             {
@@ -112,7 +135,7 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
 
             if (tableReservation.User != user)
             {
-                return Unauthorized($"It's not your opinion.");
+                return BadRequest($"It's not your table reservation.");
             }
 
             _dataContext.TableReservations.Remove(tableReservation);
