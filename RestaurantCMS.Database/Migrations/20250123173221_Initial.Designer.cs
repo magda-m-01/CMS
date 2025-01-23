@@ -12,8 +12,8 @@ using RestaurantCMS.Database;
 namespace RestaurantCMS.Database.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250118131833_NewMigration")]
-    partial class NewMigration
+    [Migration("20250123173221_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,6 +264,9 @@ namespace RestaurantCMS.Database.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Ingredients")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool?>("IsDishOfDay")
                         .HasColumnType("bit");
 
@@ -411,7 +414,7 @@ namespace RestaurantCMS.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MaximumNumberOfPeople")
+                    b.Property<int?>("MaximumNumberOfPeople")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
