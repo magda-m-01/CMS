@@ -110,7 +110,9 @@ const TableReservations = () => {
             const isoDate = selectedDateTime.toISOString();
 
             await addTableReservation(token, {
-                tableId: selectedTable.id,
+                table: {
+                    id: selectedTable.id,
+                },
                 numberOfPeople: numberOfPeople,
                 startTimeOfReservation: isoDate,
             });
