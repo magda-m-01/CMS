@@ -50,13 +50,13 @@ const ClientOpinions = () => {
             }
         };
 
-        fetchOpinions();
-    }, [token]);
+        if (!openEditDialog) fetchOpinions();
+    }, [token, openEditDialog]);
 
     const handleAddOpinion = async () => {
         try {
             const addedOpinion = await addClientOpinion(token, newOpinion);
-            setOpinions((prev) => [addedOpinion.data, ...prev]);
+            setOpinions((prev) => [newOpinion, ...prev]);
             setNewOpinion({ title: "", content: "" });
             setOpenDialog(false);
         } catch (err) {
@@ -80,19 +80,11 @@ const ClientOpinions = () => {
 
     const handleSaveEdit = async () => {
         try {
-            const updatedOpinion = await editClientOpinion(token, {
+            await editClientOpinion(token, {
                 id: editingOpinion.id,
                 title: editingOpinion.title,
                 content: editingOpinion.content,
             });
-
-            setOpinions((prev) =>
-                prev.map((opinion) =>
-                    opinion.id === updatedOpinion.data.id
-                        ? updatedOpinion.data
-                        : opinion
-                )
-            );
             setEditingOpinion(null);
             setOpenEditDialog(false);
         } catch (err) {

@@ -10,6 +10,7 @@ import {
     Button,
     Paper,
     IconButton,
+    Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -26,6 +27,7 @@ const RestaurantDetails = () => {
     const [newKeyValue, setNewKeyValue] = useState("");
     const [editingDetailId, setEditingDetailId] = useState(null);
     const [editingKeyValue, setEditingKeyValue] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const token = useSelector((state) => state.auth.token);
 
     const fetchDetails = async () => {
@@ -90,8 +92,17 @@ const RestaurantDetails = () => {
             setDetails([...details, response.data]);
             setNewKeyName("");
             setNewKeyValue("");
+            setErrorMessage("");
         } catch (error) {
-            console.error("Error adding restaurant detail:", error);
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data === "Rekord o tym KeyName już istenieje!"
+            ) {
+                setErrorMessage("Rekord o tym KeyName już istenieje!");
+            } else {
+                console.error("Error adding restaurant detail:", error);
+            }
         }
     };
 
@@ -202,6 +213,7 @@ const RestaurantDetails = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: 5,
+                    flexDirection: "column",
                 }}
             >
                 <TextField
@@ -209,6 +221,8 @@ const RestaurantDetails = () => {
                     value={newKeyName}
                     onChange={(e) => setNewKeyName(e.target.value)}
                     fullWidth
+                    error={Boolean(errorMessage)}
+                    helperText={errorMessage}
                 />
                 <TextField
                     label="Key Value"

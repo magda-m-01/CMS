@@ -30,6 +30,10 @@ const SocialMediaAdmin = () => {
         url: "",
     });
     const [error, setError] = useState(null);
+    const [formErrors, setFormErrors] = useState({
+        logoPath: false,
+        url: false,
+    });
     const token = useSelector((state) => state.auth.token);
 
     const fetchSocialMediaLinks = async () => {
@@ -50,18 +54,35 @@ const SocialMediaAdmin = () => {
         setEditingLinkDetails({ logoPath: link.logoPath, url: link.url });
     };
 
+    const validateFields = () => {
+        const errors = {
+            logoPath: !newLogoPath && !editingLinkDetails.logoPath,
+            url: !newUrl && !editingLinkDetails.url,
+        };
+        setFormErrors(errors);
+        return !errors.logoPath && !errors.url;
+    };
+
     const handleSaveLink = async () => {
+        if (!validateFields()) {
+            return;
+        }
+
         if (editingLinkId) {
             try {
-                const response = await editSocialMedia(
-                    token,
-                    editingLinkId,
-                    editingLinkDetails
-                );
+                const response = await editSocialMedia(token, {
+                    id: editingLinkId,
+                    logoPath: editingLinkDetails.logoPath,
+                    url: editingLinkDetails.url,
+                });
                 setSocialMediaLinks(
                     socialMediaLinks.map((link) =>
                         link.id === editingLinkId
-                            ? { ...link, ...editingLinkDetails }
+                            ? {
+                                  id: editingLinkId,
+                                  logoPath: editingLinkDetails.logoPath,
+                                  url: editingLinkDetails.url,
+                              }
                             : link
                     )
                 );
@@ -146,6 +167,12 @@ const SocialMediaAdmin = () => {
                                             }
                                             fullWidth
                                             label="Logo Path"
+                                            error={formErrors.logoPath}
+                                            helperText={
+                                                formErrors.logoPath
+                                                    ? "Logo Path is required"
+                                                    : ""
+                                            }
                                         />
                                     ) : (
                                         <img
@@ -177,6 +204,12 @@ const SocialMediaAdmin = () => {
                                                 })
                                             }
                                             fullWidth
+                                            error={formErrors.url}
+                                            helperText={
+                                                formErrors.url
+                                                    ? "URL is required"
+                                                    : ""
+                                            }
                                         />
                                     ) : (
                                         link.url
@@ -243,11 +276,17 @@ const SocialMediaAdmin = () => {
                     label="Logo Path"
                     value={newLogoPath}
                     onChange={(e) => setNewLogoPath(e.target.value)}
+                    error={formErrors.logoPath}
+                    helperText={
+                        formErrors.logoPath ? "Logo Path is required" : ""
+                    }
                 />
                 <TextField
                     label="URL"
                     value={newUrl}
                     onChange={(e) => setNewUrl(e.target.value)}
+                    error={formErrors.url}
+                    helperText={formErrors.url ? "URL is required" : ""}
                 />
                 <Button variant="contained" onClick={handleSaveLink}>
                     Add New Link

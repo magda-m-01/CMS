@@ -124,7 +124,7 @@ const MyReservations = ({ setShowMyReservations }) => {
                                                     color: "primary.main",
                                                 }}
                                             >
-                                                Table {reservation.tableId}
+                                                Table {reservation.table.id}
                                             </Typography>
                                             <Typography
                                                 variant="body1"

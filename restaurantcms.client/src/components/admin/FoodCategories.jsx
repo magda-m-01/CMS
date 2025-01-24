@@ -22,6 +22,7 @@ const FoodCategories = () => {
     const [categories, setCategories] = useState([]);
     const [newCategory, setNewCategory] = useState("");
     const [editingCategoryId, setEditingCategoryId] = useState(null);
+    const [errorMessage, setErrorMessage] = useState("");
     const token = useSelector((state) => state.auth.token);
 
     const fetchCategories = async () => {
@@ -36,6 +37,7 @@ const FoodCategories = () => {
     const handleEditCategory = (id, name) => {
         setEditingCategoryId(id);
         setNewCategory(name);
+        setErrorMessage("");
     };
 
     const handleSaveCategory = async (id) => {
@@ -53,20 +55,29 @@ const FoodCategories = () => {
             );
             setEditingCategoryId(null);
             setNewCategory("");
+            setErrorMessage("");
         } catch (error) {
-            console.error("Error saving category:", error);
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data === "Kategoria o tej nazwie istnieje!"
+            ) {
+                setErrorMessage("Kategoria o tej nazwie istnieje!");
+            } else {
+                console.error("Error saving category:", error);
+            }
         }
     };
 
     const handleCancelEdit = () => {
         setEditingCategoryId(null);
         setNewCategory("");
+        setErrorMessage("");
     };
 
     const handleDeleteCategory = async (id) => {
         try {
             await deleteFoodCategory(token, id);
-
             setCategories(categories.filter((category) => category.id !== id));
         } catch (error) {
             console.error("Error deleting category:", error);
@@ -78,11 +89,19 @@ const FoodCategories = () => {
             const response = await addFoodCategory(token, {
                 name: newCategory,
             });
-
             setCategories([...categories, response.data]);
             setNewCategory("");
+            setErrorMessage("");
         } catch (error) {
-            console.error("Error adding category:", error);
+            if (
+                error.response &&
+                error.response.status === 400 &&
+                error.response.data === "Kategoria o tej nazwie istnieje!"
+            ) {
+                setErrorMessage("Kategoria o tej nazwie istnieje!");
+            } else {
+                console.error("Error adding category:", error);
+            }
         }
     };
 
@@ -111,6 +130,8 @@ const FoodCategories = () => {
                                                 setNewCategory(e.target.value)
                                             }
                                             fullWidth
+                                            error={Boolean(errorMessage)}
+                                            helperText={errorMessage}
                                         />
                                     ) : (
                                         category.name
@@ -182,6 +203,8 @@ const FoodCategories = () => {
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     fullWidth
+                    error={Boolean(errorMessage)}
+                    helperText={errorMessage}
                 />
                 <Button
                     variant="contained"

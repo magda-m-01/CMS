@@ -24,6 +24,7 @@ const TablesAdmin = () => {
         useState("");
     const [editingId, setEditingId] = useState(null);
     const [editingValue, setEditingValue] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const token = useSelector((state) => state.auth.token);
 
     const fetchTables = async () => {
@@ -36,18 +37,27 @@ const TablesAdmin = () => {
     };
 
     const handleAddNewTable = async () => {
+        if (newMaximumNumberOfPeople < 0) {
+            setErrorMessage("Number of people cannot be negative.");
+            return;
+        }
         try {
             const response = await addTable(token, {
                 maximumNumberOfPeople: newMaximumNumberOfPeople,
             });
             setTables([...tables, response.data]);
             setNewMaximumNumberOfPeople("");
+            setErrorMessage("");
         } catch (error) {
             console.error("Error adding table:", error);
         }
     };
 
     const handleEditTable = async (id) => {
+        if (editingValue < 0) {
+            setErrorMessage("Number of people cannot be negative.");
+            return;
+        }
         try {
             await editTable(token, { id, maximumNumberOfPeople: editingValue });
             setTables(
@@ -59,6 +69,7 @@ const TablesAdmin = () => {
             );
             setEditingId(null);
             setEditingValue("");
+            setErrorMessage("");
         } catch (error) {
             console.error("Error editing table:", error);
         }
@@ -100,6 +111,12 @@ const TablesAdmin = () => {
                                                 setEditingValue(e.target.value)
                                             }
                                             type="number"
+                                            error={editingValue < 0}
+                                            helperText={
+                                                editingValue < 0
+                                                    ? "Number of people cannot be negative."
+                                                    : ""
+                                            }
                                         />
                                     ) : (
                                         table.maximumNumberOfPeople
@@ -123,6 +140,7 @@ const TablesAdmin = () => {
                                                 onClick={() => {
                                                     setEditingId(null);
                                                     setEditingValue("");
+                                                    setErrorMessage("");
                                                 }}
                                             >
                                                 Cancel
@@ -138,6 +156,7 @@ const TablesAdmin = () => {
                                                     setEditingValue(
                                                         table.maximumNumberOfPeople
                                                     );
+                                                    setErrorMessage("");
                                                 }}
                                             >
                                                 Edit
@@ -175,6 +194,12 @@ const TablesAdmin = () => {
                         setNewMaximumNumberOfPeople(e.target.value)
                     }
                     fullWidth
+                    error={newMaximumNumberOfPeople < 0}
+                    helperText={
+                        newMaximumNumberOfPeople < 0
+                            ? "Number of people cannot be negative."
+                            : errorMessage
+                    }
                 />
                 <Button
                     variant="contained"

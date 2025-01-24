@@ -5,12 +5,14 @@ import { useSelector } from "react-redux";
 import { Link } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setToken } from "../slices/authSlice";
+import { useNavigate } from "react-router";
 
 const UserOptions = () => {
     const isAdmin = useSelector((state) => state.auth.isAdmin);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    let navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleClick = (event) => {
@@ -23,6 +25,7 @@ const UserOptions = () => {
 
     const handleLogout = () => {
         dispatch(setToken(null));
+        navigate("/");
     };
 
     return (
