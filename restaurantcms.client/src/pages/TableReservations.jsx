@@ -20,6 +20,7 @@ import {
     addTableReservation,
     getAllTableReservations,
     getAllTablesForUser,
+    getAvailableTablesForDateAndPeople,
 } from "../api/tables";
 import MyReservations from "../components/MyReservations";
 
@@ -37,11 +38,18 @@ const TableReservations = () => {
     const token = useSelector((state) => state.auth.token);
     const [showMyReservations, setShowMyReservations] = useState(true);
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+    const [clicked, setClicked] = useState(false);
 
     const fetchTables = async () => {
         try {
             setLoading(true);
-            const tablesResponse = await getAllTablesForUser(token);
+            const selectedDateTime = new Date(date);
+            selectedDateTime.setHours(12, 0, 0, 0);
+            const isoDate = selectedDateTime.toISOString();
+            const tablesResponse = await getAvailableTablesForDateAndPeople(
+                token,
+                { reservationDate: isoDate, numberOfPeople: numberOfPeople }
+            );
             const reservationsResponse = await getAllTableReservations(token);
 
             setTables(tablesResponse.data);
@@ -57,38 +65,19 @@ const TableReservations = () => {
         fetchTables();
     }, []);
 
-    const filterAvailableTables = (selectedDate, selectedNumberOfPeople) => {
-        if (!selectedDate || !selectedNumberOfPeople) return;
-
-        // Filter out the reservations that match the selected date and number of people
+    const filterAvailableTables = async (
+        selectedDate,
+        selectedNumberOfPeople
+    ) => {
         const selectedDateTime = new Date(selectedDate);
-        selectedDateTime.setHours(0, 0, 0, 0); // Set to the start of the day
-
-        // Filter reservations for the selected date
-        console.log("reservations", reservations);
-        const filteredReservations = reservations.filter((reservation) => {
-            const reservationDate = new Date(
-                reservation.startTimeOfReservation
-            );
-            console.log("reservationDate", reservationDate);
-            reservationDate.setHours(0, 0, 0, 0); // Set to the start of the day for comparison
-            return reservationDate.getTime() === selectedDateTime.getTime();
+        selectedDateTime.setHours(12, 0, 0, 0);
+        const isoDate = selectedDateTime.toISOString();
+        const tablesResponse = await getAvailableTablesForDateAndPeople(token, {
+            reservationDate: isoDate,
+            numberOfPeople: selectedNumberOfPeople,
         });
-
-        // Get all taken table IDs for the selected date
-        const takenTableIds = filteredReservations.map(
-            (reservation) => reservation.tableId
-        );
-
-        // Filter tables that are not taken and have a sufficient number of seats
-        const availableTables = tables.filter(
-            (table) =>
-                !takenTableIds.includes(table.id) &&
-                table.maximumNumberOfPeople >= selectedNumberOfPeople
-        );
-
-        setAvailableTables(availableTables);
-        setShowTables(true); // Show tables after filtering
+        setAvailableTables(tablesResponse.data);
+        setShowTables(true);
     };
 
     const isTableTaken = (tableId) => {
@@ -111,24 +100,19 @@ const TableReservations = () => {
         }
 
         try {
-            // Parse the selected date to ensure it's valid
             const selectedDateTime = new Date(date);
             if (isNaN(selectedDateTime)) {
                 alert("Please select a valid date.");
                 return;
             }
 
-            // Set the time to a fixed hour, e.g., 12:00 PM (you can customize this if needed)
-            selectedDateTime.setHours(12, 0, 0, 0); // Set to noon or any time of your choosing
+            selectedDateTime.setHours(12, 0, 0, 0);
+            const isoDate = selectedDateTime.toISOString();
 
-            // Format the date to ISO string for API (without overriding with current time)
-            const isoDate = selectedDateTime.toISOString(); // Ensure the format is 'YYYY-MM-DDTHH:mm:ss.sssZ'
-
-            // Call the API to add a reservation with the formatted date
             await addTableReservation(token, {
                 tableId: selectedTable.id,
                 numberOfPeople: numberOfPeople,
-                startTimeOfReservation: isoDate, // Send the selected date with fixed time
+                startTimeOfReservation: isoDate,
             });
 
             setSuccessMessage(
@@ -139,9 +123,11 @@ const TableReservations = () => {
             console.error("Error making reservation:", error);
         }
         setShowMyReservations(true);
+        setAvailableTables([]);
     };
 
     const handleInputChange = (e) => {
+        setAvailableTables([]);
         const { name, value } = e.target;
 
         if (name === "date") {
@@ -192,7 +178,7 @@ const TableReservations = () => {
                                     inputProps={{
                                         min: new Date()
                                             .toISOString()
-                                            .split("T")[0], // Disable past dates
+                                            .split("T")[0],
                                     }}
                                 />
                             </Grid>
@@ -215,15 +201,21 @@ const TableReservations = () => {
                             variant="contained"
                             color="primary"
                             fullWidth
-                            onClick={() =>
-                                filterAvailableTables(date, numberOfPeople)
-                            }
+                            onClick={() => {
+                                filterAvailableTables(date, numberOfPeople);
+                                setClicked(true);
+                            }}
                             disabled={!date || !numberOfPeople}
                         >
                             Show Available Tables
                         </Button>
 
-                        {loading ? (
+                        {clicked && availableTables.length === 0 ? (
+                            <Box sx={{ mt: 6 }}>
+                                No available tables for that date and number of
+                                people
+                            </Box>
+                        ) : loading ? (
                             <CircularProgress sx={{ marginTop: 3 }} />
                         ) : (
                             <>
@@ -335,7 +327,10 @@ const TableReservations = () => {
                                         fullWidth
                                         sx={{ marginTop: 3 }}
                                         onClick={handleReservation}
-                                        disabled={!selectedTable}
+                                        disabled={
+                                            !selectedTable ||
+                                            availableTables.length === 0
+                                        }
                                     >
                                         Reserve Table
                                     </Button>

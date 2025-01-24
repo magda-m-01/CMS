@@ -47,6 +47,18 @@ export const getAllTableReservationsOfSingleUser = (token) => {
     );
 };
 
+export const getAvailableTablesForDateAndPeople = (token, payload) => {
+    return axios.post(
+        "/api/authorizeduser/TableReservation/GetAvailableTablesForDateAndPeople",
+        payload,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+};
+
 export const addTableReservation = (token, payload) => {
     return axios.post(
         "/api/authorizeduser/TableReservation/AddTableReservation",
@@ -99,4 +111,27 @@ export const deleteTable = (token, id) => {
             Authorization: `Bearer ${token}`,
         },
     });
+};
+
+export const setAllTableReservationsAdmin = (token) => {
+    return axios.get(
+        "/api/administrator/TableReservation/GetAllTableReservationsAdmin",
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        }
+    );
+};
+
+export const deleteTableReservationAdmin = (token, id) => {
+    return axios.delete(
+        `/api/administrator/TableReservation/DeleteTableReservationAdmin?id=${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
 };
