@@ -103,17 +103,24 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
-            var restaurantStaff = await _dataContext.SocialMedia.FirstOrDefaultAsync(rs => rs.Id == socialMedia.Id);
+            var socialMediaRecord = await _dataContext.SocialMedia.FirstOrDefaultAsync(rs => rs.Id == socialMedia.Id);
 
-            if (restaurantStaff == null)
+            if (socialMediaRecord == null)
             {
                 return NotFound($"No social media with ID {socialMedia.Id}");
             }
+            if (string.IsNullOrEmpty(socialMedia.Url) || string.IsNullOrEmpty(socialMedia.LogoPath))
+            {
+                return BadRequest("Musisz podać url i logopath!");
+            }
 
-            _dataContext.SocialMedia.Update(socialMedia);
+            socialMediaRecord.LogoPath = socialMedia.LogoPath;
+            socialMediaRecord.Url = socialMedia.Url;
+
+            _dataContext.SocialMedia.Update(socialMediaRecord);
             await _dataContext.SaveChangesAsync();
 
-            return Ok(restaurantStaff);
+            return Ok(socialMediaRecord);
         }
     }
 }

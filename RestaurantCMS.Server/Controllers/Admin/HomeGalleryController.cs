@@ -32,6 +32,12 @@ namespace RestaurantCMS.Server.Controllers.Admin
         public async Task<IActionResult> AddHomeGallery(HomeGallery photo)
         {
             photo.CreatedAt = DateTime.UtcNow;
+
+            if (string.IsNullOrEmpty(photo.PhotoPath))
+            {
+                return BadRequest("Podaj wszystkie paramtery!");
+            }
+
             await _dataContext.HomeGallery.AddAsync(photo);
             await _dataContext.SaveChangesAsync();
             return Ok(photo);
@@ -45,9 +51,9 @@ namespace RestaurantCMS.Server.Controllers.Admin
                 return NotFound($"No section found with ID {photo.Id}");
             }
 
-            photo.PhotoPath = photo.PhotoPath ?? existingSection.PhotoPath;
+            existingSection.PhotoPath = photo.PhotoPath ?? existingSection.PhotoPath;
 
-            _dataContext.HomeGallery.Update(photo);
+            _dataContext.HomeGallery.Update(existingSection);
             await _dataContext.SaveChangesAsync();
             return Ok(existingSection);
         }

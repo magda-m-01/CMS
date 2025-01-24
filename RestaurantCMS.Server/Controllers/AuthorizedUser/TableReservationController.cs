@@ -74,6 +74,11 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
                 return NotFound("User not found");
             }
 
+            if (addTableReservation.NumberOfPeople <= 0)
+            {
+                return BadRequest("Nie możesz zarezerwować stolika dla takiej liczby osób");
+            }
+
             var reservationDate = addTableReservation.StartTimeOfReservation.Date;
 
             var tables = await _dataContext.Tables.ToListAsync();

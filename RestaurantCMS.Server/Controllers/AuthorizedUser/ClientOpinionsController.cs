@@ -49,6 +49,11 @@ namespace RestaurantCMS.Server.Controllers.AuthorizedUser
                 return NotFound("User not found");
             }
 
+            if (string.IsNullOrEmpty(addClientOpinion.Content) || string.IsNullOrEmpty(addClientOpinion.Title))
+            {
+                return BadRequest("Uzupe³nij wszystkie informacje o opinii!");
+            }
+
             var clientOpinion = new ClientOpinion()
             {
                 Title = addClientOpinion.Title,
@@ -77,7 +82,10 @@ namespace RestaurantCMS.Server.Controllers.AuthorizedUser
             {
                 return NotFound("User not found");
             }
-
+            if (string.IsNullOrEmpty(editClientOpinion.Content) || string.IsNullOrEmpty(editClientOpinion.Title))
+            {
+                return BadRequest("Uzupe³nij wszystkie informacje o opinii");
+            }
             var clientOpinion  = await _dataContext.ClientOpinions.FirstOrDefaultAsync(rs => rs.Id == editClientOpinion.Id);
 
             if (clientOpinion == null)
