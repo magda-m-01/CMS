@@ -78,32 +78,33 @@ namespace RestaurantCMS.Server.Controllers.LoggedUser
             {
                 return BadRequest("Nie możesz zarezerwować stolika dla takiej liczby osób");
             }
-
-            var reservationDate = addTableReservation.StartTimeOfReservation.Date;
-
-            var tables = await _dataContext.Tables.ToListAsync();
-            var tableReservations = await _dataContext.TableReservations
-                .Where(tr => tr.StartTimeOfReservation.Date == reservationDate)
-                .ToListAsync();
-
-            var availableTables = tables
-                .Where(t => t.MaximumNumberOfPeople >= addTableReservation.NumberOfPeople &&
-                            !tableReservations.Any(tr => tr.Table != null && tr.Table.Id == t.Id))
-                .ToList();
-
-            if (!availableTables.Any())
+            if(addTableReservation.Table == null || addTableReservation.Table.Id == 0)
             {
-                return BadRequest("No available tables for the specified date and number of people.");
+                return BadRequest("Podaj stolik do rezerwacji.");
             }
 
-            var selectedTable = availableTables.First();
+            var tableReservations = await _dataContext.TableReservations.ToListAsync();
+            var tables = await _dataContext.Tables.ToListAsync();
 
+            var table = tables.FirstOrDefault(x => x.Id == addTableReservation.Table.Id);
+
+
+            var isInTable = tableReservations.Any(x => x.StartTimeOfReservation.Date == addTableReservation.StartTimeOfReservation.Date && x.Table?.Id == addTableReservation.Table?.Id);
+
+            if(isInTable)
+            {
+                return BadRequest("Rezerwacja tego stolikan ten dzień już jest");
+            }
+            if (addTableReservation.NumberOfPeople > table.MaximumNumberOfPeople)
+            {
+                return BadRequest("Nie możesz zarezerwoać tego stolika z tą ilością osób");
+            }
             var tableReservation = new TableReservation()
             {
-                StartTimeOfReservation = reservationDate,
+                StartTimeOfReservation = addTableReservation.StartTimeOfReservation.Date,
                 NumberOfPeople = addTableReservation.NumberOfPeople,
                 User = user,
-                Table = selectedTable
+                Table = table
             };
 
             await _dataContext.TableReservations.AddAsync(tableReservation);
