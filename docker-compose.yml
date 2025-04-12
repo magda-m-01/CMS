@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=db;Database=RestaurantCMS;User=sa;Password=Your_password123;TrustServerCertificate=True"
+
+  frontend:
+    build:
+      context: ./restaurantcms.client
+    environment:
+      - NODE_ENV=production  # <-- Add this
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+      MSSQL_TEMP_DB_FILE_COUNT: 4  # Reduce from 8
+      MSSQL_TEMP_DB_FILE_SIZE: 500 # 500 MB per file
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -U sa -P Your_password123 -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
