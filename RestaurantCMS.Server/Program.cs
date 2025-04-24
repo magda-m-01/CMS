@@ -5,7 +5,7 @@ using RestaurantCMS.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+builder.WebHost.UseUrls("http://*:5000");
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -31,6 +31,22 @@ builder.Services.AddIdentityApiEndpoints<IdentityUser>()
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DataContext>();
+        context.Database.Migrate();  // Apply migrations
+        await SeedDataAsync(services, builder);  // Seed data
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Migration/seeding failed");
+    }
+}
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -41,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapIdentityApi<IdentityUser>();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllTables = (token) => {
-    return axios.get("/api/administrator/Table/GetAllTables", {
+    return axios.get("http://localhost:5000/administrator/Table/GetAllTables", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -9,7 +9,7 @@ export const getAllTables = (token) => {
 };
 
 export const getAllTablesForUser = (token) => {
-    return axios.get("/api/authorizeduser/Table/GetAllTablesForUser", {
+    return axios.get("http://localhost:5000/authorizeduser/Table/GetAllTablesForUser", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -17,7 +17,7 @@ export const getAllTablesForUser = (token) => {
 };
 
 export const addTable = (token, payload) => {
-    return axios.post("/api/administrator/Table/AddTable", payload, {
+    return axios.post("http://localhost:5000/administrator/Table/AddTable", payload, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export const addTable = (token, payload) => {
 
 export const getAllTableReservations = (token) => {
     return axios.get(
-        "/api/authorizeduser/TableReservation/GetAllTableReservations",
+        "http://localhost:5000/authorizeduser/TableReservation/GetAllTableReservations",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -38,7 +38,7 @@ export const getAllTableReservations = (token) => {
 
 export const getAllTableReservationsOfSingleUser = (token) => {
     return axios.get(
-        "/api/authorizeduser/TableReservation/GetAllTableReservationsOfSingleUser",
+        "http://localhost:5000/authorizeduser/TableReservation/GetAllTableReservationsOfSingleUser",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ export const getAllTableReservationsOfSingleUser = (token) => {
 
 export const getAvailableTablesForDateAndPeople = (token, payload) => {
     return axios.post(
-        "/api/authorizeduser/TableReservation/GetAvailableTablesForDateAndPeople",
+        "http://localhost:5000/authorizeduser/TableReservation/GetAvailableTablesForDateAndPeople",
         payload,
         {
             headers: {
@@ -61,7 +61,7 @@ export const getAvailableTablesForDateAndPeople = (token, payload) => {
 
 export const addTableReservation = (token, payload) => {
     return axios.post(
-        "/api/authorizeduser/TableReservation/AddTableReservation",
+        "http://localhost:5000/authorizeduser/TableReservation/AddTableReservation",
         payload,
         {
             headers: {
@@ -74,7 +74,7 @@ export const addTableReservation = (token, payload) => {
 
 export const editTableReservation = (token, payload) => {
     return axios.put(
-        "/api/authorizeduser/TableReservation/EditTableReservation",
+        "http://localhost:5000/authorizeduser/TableReservation/EditTableReservation",
         payload,
         {
             headers: {
@@ -87,7 +87,7 @@ export const editTableReservation = (token, payload) => {
 
 export const deleteTableReservation = (token, id) => {
     return axios.delete(
-        `/api/authorizeduser/TableReservation/DeleteTableReservation?id=${id}`,
+        `http://localhost:5000/authorizeduser/TableReservation/DeleteTableReservation?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ export const deleteTableReservation = (token, id) => {
 };
 
 export const editTable = (token, payload) => {
-    return axios.put("/api/administrator/Table/EditTable", payload, {
+    return axios.put("http://localhost:5000/administrator/Table/EditTable", payload, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -106,7 +106,7 @@ export const editTable = (token, payload) => {
 };
 
 export const deleteTable = (token, id) => {
-    return axios.delete(`/api/administrator/Table/DeleteTable?id=${id}`, {
+    return axios.delete(`http://localhost:5000/administrator/Table/DeleteTable?id=${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -115,7 +115,7 @@ export const deleteTable = (token, id) => {
 
 export const setAllTableReservationsAdmin = (token) => {
     return axios.get(
-        "/api/administrator/TableReservation/GetAllTableReservationsAdmin",
+        "http://localhost:5000/administrator/TableReservation/GetAllTableReservationsAdmin",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ export const setAllTableReservationsAdmin = (token) => {
 
 export const deleteTableReservationAdmin = (token, id) => {
     return axios.delete(
-        `/api/administrator/TableReservation/DeleteTableReservationAdmin?id=${id}`,
+        `http://localhost:5000/administrator/TableReservation/DeleteTableReservationAdmin?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

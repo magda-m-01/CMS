@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const getAllRestaurantStaff = (token) => {
     return axios.get(
-        "/api/administrator/RestaurantStaff/GetAllRestaurantStaff",
+        "http://localhost:5000/administrator/RestaurantStaff/GetAllRestaurantStaff",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -13,7 +13,7 @@ export const getAllRestaurantStaff = (token) => {
 
 export const addRestaurantStaff = (token, payload) => {
     return axios.post(
-        "/api/administrator/RestaurantStaff/AddRestaurantStaff",
+        "http://localhost:5000/administrator/RestaurantStaff/AddRestaurantStaff",
         payload,
         {
             headers: {
@@ -26,7 +26,7 @@ export const addRestaurantStaff = (token, payload) => {
 
 export const editRestaurantStaff = (token, payload) => {
     return axios.put(
-        "/api/administrator/RestaurantStaff/EditRestaurantStaff",
+        "http://localhost:5000/administrator/RestaurantStaff/EditRestaurantStaff",
         payload,
         {
             headers: {
@@ -39,7 +39,7 @@ export const editRestaurantStaff = (token, payload) => {
 
 export const deleteRestaurantStaff = (token, id) => {
     return axios.delete(
-        `/api/administrator/RestaurantStaff/DeleteRestaurantStaff?id=${id}`,
+        `http://localhost:5000/administrator/RestaurantStaff/DeleteRestaurantStaff?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

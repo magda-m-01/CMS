@@ -1,25 +1,25 @@
 import axios from "axios";
 
 export const getDishesPage = () => {
-    return axios.get("/api/Dish/GetDishesPage");
+    return axios.get("http://localhost:5000/Dish/GetDishesPage");
 };
 
 export const getHomeWelcomeSectionPage = () => {
-    return axios.get("/api/HomeWelcomeSection/GetHomeWelcomeSectionsPage");
+    return axios.get("http://localhost:5000/HomeWelcomeSection/GetHomeWelcomeSectionsPage");
 };
 
 export const getHomeGalleriesPage = (token) => {
-    return axios.get("/api/HomeGallery/GetHomeGalleriesPage");
+    return axios.get("http://localhost:5000/HomeGallery/GetHomeGalleriesPage");
 };
 
 export const getRestaurantDetailsPage = (token) => {
-    return axios.get("/api/RestaurantDetails/GetRestaurantDetailsPage");
+    return axios.get("http://localhost:5000/RestaurantDetails/GetRestaurantDetailsPage");
 };
 
 export const getRestaurantStaffPage = (token) => {
-    return axios.get("/api/RestaurantStaff/GetRestaurantStaffPage");
+    return axios.get("http://localhost:5000/RestaurantStaff/GetRestaurantStaffPage");
 };
 
 export const getSocialMedia = (token) => {
-    return axios.get("/api/SocialMedia/GetSocialMedia");
+    return axios.get("http://localhost:5000/SocialMedia/GetSocialMedia");
 };

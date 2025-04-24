@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllDishes = (token) => {
-    return axios.get("/api/administrator/Dish/GetAllDishes", {
+    return axios.get("http://localhost:5000/administrator/Dish/GetAllDishes", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -9,7 +9,7 @@ export const getAllDishes = (token) => {
 };
 
 export const addDish = (token, payload) => {
-    return axios.post("/api/administrator/Dish/AddDish", payload, {
+    return axios.post("http://localhost:5000/administrator/Dish/AddDish", payload, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -18,7 +18,7 @@ export const addDish = (token, payload) => {
 };
 
 export const editDish = (token, payload) => {
-    return axios.put("/api/administrator/Dish/EditDish", payload, {
+    return axios.put("http://localhost:5000/administrator/Dish/EditDish", payload, {
         headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const editDish = (token, payload) => {
 
 export const deleteDish = (token, id) => {
     console.log("id", id);
-    return axios.delete(`/api/administrator/Dish/DeleteDish?id=${id}`, {
+    return axios.delete(`http://localhost:5000/administrator/Dish/DeleteDish?id=${id}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllSocialMedia = (token) => {
-    return axios.get("/api/administrator/SocialMedia/GetAllSocialMedia", {
+    return axios.get("http://localhost:5000/administrator/SocialMedia/GetAllSocialMedia", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -10,7 +10,7 @@ export const getAllSocialMedia = (token) => {
 
 export const addSocialMedia = (token, payload) => {
     return axios.post(
-        "/api/administrator/SocialMedia/AddSocialMedia",
+        "http://localhost:5000/administrator/SocialMedia/AddSocialMedia",
         payload,
         {
             headers: {
@@ -23,7 +23,7 @@ export const addSocialMedia = (token, payload) => {
 
 export const editSocialMedia = (token, payload) => {
     return axios.put(
-        "/api/administrator/SocialMedia/EditSocialMedia",
+        "http://localhost:5000/administrator/SocialMedia/EditSocialMedia",
         payload,
         {
             headers: {
@@ -36,7 +36,7 @@ export const editSocialMedia = (token, payload) => {
 
 export const deleteSocialMedia = (token, id) => {
     return axios.delete(
-        `/api/administrator/SocialMedia/DeleteSocialMedia?id=${id}`,
+        `http://localhost:5000/administrator/SocialMedia/DeleteSocialMedia?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

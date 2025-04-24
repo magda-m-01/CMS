@@ -2,11 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// Environment detection
-const isDev = process.env.NODE_ENV === 'development';
-const isDocker = process.env.DOCKER_ENV === 'true';
-
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
@@ -16,16 +12,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5173,
     proxy: {
-      // Proxy all API requests
+      // Proxy all API requests to port 5000
       '/api': {
-        target: isDocker ? 'http://backend:5000' : 'http://localhost:5000',
+        target: 'http://localhost:5000', // Always target port 5000
         changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      // Original weather forecast endpoint (if still needed)
-      '^/weatherforecast': {
-        target: 'http://localhost:5000',
         secure: false
       }
     }
@@ -33,10 +23,6 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: 'dist',
     assetsDir: 'static',
-    sourcemap: mode === 'development' // Enable sourcemaps in dev
-  },
-  // Docker-specific settings
-  define: {
-    'process.env.DOCKER_ENV': JSON.stringify(process.env.DOCKER_ENV || 'false')
+    sourcemap: process.env.NODE_ENV === 'development'
   }
-}));
+});

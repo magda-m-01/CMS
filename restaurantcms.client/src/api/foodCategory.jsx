@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllFoodCategories = (token) => {
-    return axios.get("/api/administrator/FoodCategory/GetAllFoodCategories", {
+    return axios.get("http://localhost:5000/administrator/FoodCategory/GetAllFoodCategories", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -10,7 +10,7 @@ export const getAllFoodCategories = (token) => {
 
 export const addFoodCategory = (token, payload) => {
     return axios.post(
-        "/api/administrator/FoodCategory/AddFoodCategory",
+        "http://localhost:5000/administrator/FoodCategory/AddFoodCategory",
         payload,
         {
             headers: {
@@ -23,7 +23,7 @@ export const addFoodCategory = (token, payload) => {
 
 export const editFoodCategory = (token, payload) => {
     return axios.put(
-        "/api/administrator/FoodCategory/EditFoodCategory",
+        "http://localhost:5000/administrator/FoodCategory/EditFoodCategory",
         payload,
         {
             headers: {
@@ -37,7 +37,7 @@ export const editFoodCategory = (token, payload) => {
 export const deleteFoodCategory = (token, id) => {
     console.log("id", id);
     return axios.delete(
-        `/api/administrator/FoodCategory/DeleteFoodCategory?id=${id}`,
+        `http://localhost:5000/administrator/FoodCategory/DeleteFoodCategory?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,

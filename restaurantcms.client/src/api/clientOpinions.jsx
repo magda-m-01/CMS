@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getAllClientsOpinions = (token) => {
-    return axios.get("/api/ClientOpinions/GetAllClientOpinions", {
+    return axios.get("http://localhost:5000/ClientOpinions/GetAllClientOpinions", {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -10,7 +10,7 @@ export const getAllClientsOpinions = (token) => {
 
 export const addClientOpinion = (token, payload) => {
     return axios.post(
-        "/api/authorizeduser/ClientOpinions/AddClientOpinion",
+        "http://localhost:5000/authorizeduser/ClientOpinions/AddClientOpinion",
         payload,
         {
             headers: {
@@ -23,7 +23,7 @@ export const addClientOpinion = (token, payload) => {
 
 export const editClientOpinion = (token, payload) => {
     return axios.put(
-        "/api/authorizeduser/ClientOpinions/EditClientOpinion",
+        "http://localhost:5000/authorizeduser/ClientOpinions/EditClientOpinion",
         payload,
         {
             headers: {
@@ -37,7 +37,7 @@ export const editClientOpinion = (token, payload) => {
 export const deleteClientOpinion = (token, id) => {
     console.log("id", id);
     return axios.delete(
-        `/api/authorizeduser/ClientOpinions/DeleteClientOpinion?id=${id}`,
+        `http://localhost:5000/authorizeduser/ClientOpinions/DeleteClientOpinion?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ export const deleteClientOpinion = (token, id) => {
 
 export const getAllClientOpinionsAdmin = (token) => {
     return axios.get(
-        "/api/administrator/ClientOpinions/GetAllClientOpinionsAdmin",
+        "http://localhost:5000/administrator/ClientOpinions/GetAllClientOpinionsAdmin",
         {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ export const getAllClientOpinionsAdmin = (token) => {
 export const deleteClientOpinionAdmin = (token, id) => {
     console.log("id", id);
     return axios.delete(
-        `/api/administrator/ClientOpinions/DeleteClientOpinionAdmin?id=${id}`,
+        `http://localhost:5000/administrator/ClientOpinions/DeleteClientOpinionAdmin?id=${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`,
